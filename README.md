@@ -1,9 +1,8 @@
 # Eloquent Searchable
 
 [![Latest Stable Version](https://poser.pugx.org/testmonitor/eloquent-searchable/v/stable)](https://packagist.org/packages/testmonitor/eloquent-searchable)
-[![Travis Build](https://travis-ci.org/testmonitor/eloquent-searchable.svg?branch=main)](https://app.travis-ci.com/github/testmonitor/eloquent-searchable)
-[![Code Quality](https://scrutinizer-ci.com/g/testmonitor/eloquent-searchable/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/testmonitor/eloquent-searchable/?branch=main)
-[![StyleCI](https://styleci.io/repos/89586066/shield)](https://styleci.io/repos/89586066)
+[![codecov](https://codecov.io/gh/testmonitor/eloquent-searchable/graph/badge.svg?token=EK8IWK6R9G)](https://codecov.io/gh/testmonitor/eloquent-searchable)
+[![StyleCI](https://styleci.io/repos/824909779/shield)](https://styleci.io/repos/824909779)
 [![License](https://poser.pugx.org/testmonitor/eloquent-searchable/license)](https://packagist.org/packages/eloquent-searchable)
 
 A package that provides a search feature for Eloquent models. You can define SearchAspects for your Eloquent model that use different search techniques, such as an exact match or partial match.
