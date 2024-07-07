@@ -2,11 +2,11 @@
 
 namespace TestMonitor\Searchable\Test;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Application;
-use Orchestra\Testbench\TestCase as OrchestraTestCase;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use TestMonitor\Searchable\SearchableServiceProvider;
+use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 abstract class TestCase extends OrchestraTestCase
 {

@@ -11,8 +11,8 @@ class SearchRequest extends Request
      *
      * @throws \Symfony\Component\HttpFoundation\Exception\BadRequestException
      * @throws \RuntimeException
-     * @return \TestMonitor\Searchable\Requests\SearchRequest
      *
+     * @return \TestMonitor\Searchable\Requests\SearchRequest
      */
     public static function fromRequest(Request $request): self
     {

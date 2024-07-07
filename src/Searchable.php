@@ -26,7 +26,6 @@ trait Searchable
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @param string|array $aspects
      * @param \Illuminate\Http\Request|null $request
-     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeSearchUsing(Builder $query, string|array $aspects, ?Request $request = null): Builder

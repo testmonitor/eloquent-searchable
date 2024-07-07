@@ -2,13 +2,13 @@
 
 namespace TestMonitor\Searchable\Test;
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use PHPUnit\Framework\Attributes\Test;
+use Illuminate\Database\Eloquent\Collection;
+use TestMonitor\Searchable\Test\Models\User;
+use TestMonitor\Searchable\Test\Models\Ticket;
 use TestMonitor\Searchable\Aspects\SearchAspect;
 use TestMonitor\Searchable\Requests\SearchRequest;
-use TestMonitor\Searchable\Test\Models\Ticket;
-use TestMonitor\Searchable\Test\Models\User;
 
 class PrefixSearchTest extends TestCase
 {
@@ -40,7 +40,7 @@ class PrefixSearchTest extends TestCase
     public function it_will_find_records_using_an_prefixed_match()
     {
         // Given
-        $this->app->bind(SearchRequest::class, fn() => SearchRequest::fromRequest(
+        $this->app->bind(SearchRequest::class, fn () => SearchRequest::fromRequest(
             new Request(['query' => 'T-11'])
         ));
 
@@ -59,7 +59,7 @@ class PrefixSearchTest extends TestCase
     public function it_will_find_records_using_an_prefixed_match_without_using_the_prefix_in_the_query()
     {
         // Given
-        $this->app->bind(SearchRequest::class, fn() => SearchRequest::fromRequest(
+        $this->app->bind(SearchRequest::class, fn () => SearchRequest::fromRequest(
             new Request(['query' => '11'])
         ));
 
@@ -107,6 +107,6 @@ class PrefixSearchTest extends TestCase
 
         // Then
         $this->assertInstanceOf(Collection::class, $results);
-        $this->assertCount(0, $results);;
+        $this->assertCount(0, $results);
     }
 }

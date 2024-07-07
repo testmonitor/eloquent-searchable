@@ -26,7 +26,6 @@ class SearchAspect
 
     /**
      * @param string $name
-     *
      * @return \App\Models\Search\SearchAspect
      */
     public static function exact(string $name): self
@@ -36,7 +35,6 @@ class SearchAspect
 
     /**
      * @param string $name
-     *
      * @return \App\Models\Search\SearchAspect
      */
     public static function partial(string $name): self
@@ -48,7 +46,6 @@ class SearchAspect
      * @param string $name
      * @param string $prefix
      * @param bool $exact
-     *
      * @return \App\Models\Search\SearchAspect
      */
     public static function prefix(string $name, string $prefix, bool $exact = false): self
@@ -59,7 +56,6 @@ class SearchAspect
     /**
      * @param string $name
      * @param \TestMonitor\Searchable\Contracts\Search $searchClass
-     *
      * @return \App\Models\Search\SearchAspect
      */
     public static function custom(string $name, Search $searchClass): self

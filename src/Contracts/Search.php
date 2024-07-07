@@ -11,7 +11,6 @@ interface Search
 {
     /**
      * @param \Illuminate\Database\Eloquent\Builder<TModelClass> $query
-     *
      * @return mixed
      */
     public function __invoke(Builder $query, string $property, string $term);

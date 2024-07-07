@@ -2,16 +2,14 @@
 
 namespace TestMonitor\Searchable\Test;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Http\Request;
 use PHPUnit\Framework\Attributes\Test;
-use TestMonitor\Searchable\Aspects\SearchAspect;
-use TestMonitor\Searchable\Aspects\SearchExact;
-use TestMonitor\Searchable\Requests\SearchRequest;
-use TestMonitor\Searchable\Searchable;
-use TestMonitor\Searchable\Test\Models\Ticket;
+use Illuminate\Database\Eloquent\Collection;
 use TestMonitor\Searchable\Test\Models\User;
+use TestMonitor\Searchable\Test\Models\Ticket;
+use TestMonitor\Searchable\Aspects\SearchAspect;
+use TestMonitor\Searchable\Requests\SearchRequest;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 
 class ExactSearchTest extends TestCase
 {
@@ -43,7 +41,7 @@ class ExactSearchTest extends TestCase
             ))
             ->create();
 
-        $this->users->each(function(User $user) {
+        $this->users->each(function (User $user) {
             Ticket::factory()->count(3)->for($user)->create();
         });
     }
@@ -52,7 +50,7 @@ class ExactSearchTest extends TestCase
     public function it_will_find_records_using_an_exact_match()
     {
         // Given
-        $this->app->bind(SearchRequest::class, fn() => SearchRequest::fromRequest(
+        $this->app->bind(SearchRequest::class, fn () => SearchRequest::fromRequest(
             new Request(['query' => 'Frank Keulen'])
         ));
 
@@ -111,7 +109,7 @@ class ExactSearchTest extends TestCase
     public function it_doesnt_return_records_when_an_exact_match_does_not_exists()
     {
         // Given
-        $this->app->bind(SearchRequest::class, fn() => SearchRequest::fromRequest(
+        $this->app->bind(SearchRequest::class, fn () => SearchRequest::fromRequest(
             new Request(['query' => 'René Ceelen'])
         ));
 
@@ -122,14 +120,14 @@ class ExactSearchTest extends TestCase
 
         // Then
         $this->assertInstanceOf(Collection::class, $results);
-        $this->assertCount(0, $results);;
+        $this->assertCount(0, $results);
     }
 
     #[Test]
     public function it_doesnt_return_records_when_only_a_partial_match_exists()
     {
         // Given
-        $this->app->bind(SearchRequest::class, fn() => SearchRequest::fromRequest(
+        $this->app->bind(SearchRequest::class, fn () => SearchRequest::fromRequest(
             new Request(['query' => 'Stephan Greutveld'])
         ));
 
@@ -140,6 +138,6 @@ class ExactSearchTest extends TestCase
 
         // Then
         $this->assertInstanceOf(Collection::class, $results);
-        $this->assertCount(0, $results);;
+        $this->assertCount(0, $results);
     }
 }
