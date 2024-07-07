@@ -6,4 +6,5 @@ build
 .idea_modules/
 
 .phpunit.result.cache
+.phpunit.cache
 /.php-cs-fixer.cache
