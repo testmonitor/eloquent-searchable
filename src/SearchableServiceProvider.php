@@ -27,6 +27,5 @@ class SearchableServiceProvider extends ServiceProvider
         $this->app->bind(SearchRequest::class, function ($app) {
             return SearchRequest::fromRequest($app['request']);
         });
-
     }
 }
