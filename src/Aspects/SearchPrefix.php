@@ -34,8 +34,8 @@ class SearchPrefix implements Search
      * @param string $term
      *
      * @throws \InvalidArgumentException
-     * @return mixed
      *
+     * @return mixed
      */
     public function __invoke(Builder $query, string $property, string $term): void
     {
@@ -57,18 +57,17 @@ class SearchPrefix implements Search
     /**
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @param string $property
-     *
      * @return bool
      */
     protected function isRelationProperty(Builder $query, string $property): bool
     {
-        if (!Str::contains($property, '.')) {
+        if (! Str::contains($property, '.')) {
             return false;
         }
 
         $firstRelationship = explode('.', $property)[0];
 
-        if (!method_exists($query->getModel(), $firstRelationship)) {
+        if (! method_exists($query->getModel(), $firstRelationship)) {
             return false;
         }
 

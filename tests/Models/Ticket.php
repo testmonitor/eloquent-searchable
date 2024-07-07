@@ -2,11 +2,11 @@
 
 namespace TestMonitor\Searchable\Test\Models;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use TestMonitor\Searchable\Searchable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Ticket extends Model
 {
@@ -20,8 +20,8 @@ class Ticket extends Model
 
     public static function booted()
     {
-        static::creating(function(Ticket $ticket) {
-            $ticket->code = (int) (Ticket::latest('code')->first()?->getAttributes()['code']) + 1;
+        static::creating(function (Ticket $ticket) {
+            $ticket->code = (int) Ticket::latest('code')->first()?->getAttributes()['code'] + 1;
         });
     }
 
