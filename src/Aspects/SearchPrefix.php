@@ -45,7 +45,7 @@ class SearchPrefix implements Search
             return;
         }
 
-        $term = preg_replace('/^' . preg_quote($this->prefix, '/') . '/', '', $term);
+        $term = preg_replace('/^' . preg_quote($this->prefix, '/') . '/i', '', $term);
 
         $query->when(
             $this->exact,
