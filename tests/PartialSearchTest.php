@@ -14,16 +14,6 @@ use Illuminate\Database\Eloquent\Factories\Sequence;
 class PartialSearchTest extends TestCase
 {
     /**
-     * @var \TestMonitor\Searchable\Test\Models\User
-     */
-    protected $user;
-
-    /**
-     * @var \TestMonitor\Searchable\Test\Models\Post
-     */
-    protected $post;
-
-    /**
      * @var \Illuminate\Database\Eloquent\Collection
      */
     protected $users;
@@ -42,7 +32,15 @@ class PartialSearchTest extends TestCase
             ->create();
 
         $this->users->each(function (User $user) {
-            Ticket::factory()->count(3)->for($user)->create();
+            Ticket::factory()
+                ->count(3)
+                ->state(new Sequence(
+                    ['name' => "{$user->name} ticket #1"],
+                    ['name' => "{$user->name} ticket #2"],
+                    ['name' => "{$user->name} ticket #3"],
+                ))
+                ->for($user)
+                ->create();
         });
     }
 

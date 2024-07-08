@@ -13,16 +13,6 @@ use TestMonitor\Searchable\Requests\SearchRequest;
 class PrefixSearchTest extends TestCase
 {
     /**
-     * @var \TestMonitor\Searchable\Test\Models\User
-     */
-    protected $user;
-
-    /**
-     * @var \TestMonitor\Searchable\Test\Models\Ticket
-     */
-    protected $post;
-
-    /**
      * @var \Illuminate\Database\Eloquent\Collection
      */
     protected $users;
