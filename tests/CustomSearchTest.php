@@ -2,16 +2,15 @@
 
 namespace TestMonitor\Searchable\Test;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use PHPUnit\Framework\Attributes\Test;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use TestMonitor\Searchable\Contracts\Search;
 use TestMonitor\Searchable\Test\Models\User;
-use TestMonitor\Searchable\Test\Models\Ticket;
 use TestMonitor\Searchable\Aspects\SearchAspect;
 use TestMonitor\Searchable\Requests\SearchRequest;
 use Illuminate\Database\Eloquent\Factories\Sequence;
-use TestMonitor\Searchable\Contracts\Search;
 
 class CustomSearchTest extends TestCase
 {
