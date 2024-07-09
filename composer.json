@@ -1,6 +1,6 @@
 {
     "name": "testmonitor/eloquent-searchable",
-    "description": "Define a custom auto-increment field in your Eloquent model, that is determined through PHP rather than your database engine.",
+    "description": "A Laravel package that adds search functionality to Eloquent models, allowing for various search techniques such as exact and partial matches.",
     "type": "library",
     "keywords": [
         "testmonitor",
