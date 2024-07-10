@@ -24,7 +24,7 @@ class SearchRequest extends Request
      */
     public function hasTerm(): bool
     {
-        return strlen($this->term()) >= config('searchable.minimal-length');
+        return strlen($this->term()) >= config('searchable.minimal_length');
     }
 
     /**
