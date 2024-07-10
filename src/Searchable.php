@@ -21,6 +21,11 @@ trait Searchable
     public SearchRequest $searchRequest;
 
     /**
+     * @var \TestMonitor\Searchable\Weights
+     */
+    protected Weights $searchWeights;
+
+    /**
      * Provide a model search query scope.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
@@ -36,6 +41,10 @@ trait Searchable
             ? SearchRequest::fromRequest($request)
             : app(SearchRequest::class);
 
+        if (! $this->searchRequest->hasTerm()) {
+            return $query;
+        }
+
         $this->searchAspects = collect($aspects)->map(function ($aspect) {
             if ($aspect instanceof SearchAspect) {
                 return $aspect;
@@ -44,9 +53,10 @@ trait Searchable
             return SearchAspect::exact($aspect);
         });
 
-        if ($this->searchRequest->hasTerm()) {
-            $query->where(fn (Builder $query) => $this->addSearchAspectsToQuery($query));
-        }
+        $this->searchWeights = new Weights();
+
+        $query->where(fn (Builder $query) => $this->addSearchAspectsToQuery($query))
+            ->tap(fn (Builder $query) => $this->addOrderByWeightToQuery($query));
 
         return $query;
     }
@@ -58,8 +68,16 @@ trait Searchable
     {
         $this->searchAspects->each(function (SearchAspect $aspect) use ($query) {
             $query->orWhere(
-                fn (Builder $query) => $aspect->search($query, $this->searchRequest->term())
+                fn (Builder $query) => $aspect->search($query, $this->searchWeights, $this->searchRequest->term())
             );
         });
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     */
+    protected function addOrderByWeightToQuery(Builder $query): void
+    {
+        $this->searchWeights->applyOrderQuery($query);
     }
 }
