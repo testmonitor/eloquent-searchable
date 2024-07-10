@@ -88,8 +88,13 @@ class SearchPrefix implements Search
      *
      * @throws \RuntimeException
      */
-    protected function withRelationConstraint(Builder $query, Weights $weights, string $property, string $term, int $weight = 1): void
-    {
+    protected function withRelationConstraint(
+        Builder $query,
+        Weights $weights,
+        string $property,
+        string $term,
+        int $weight = 1
+    ): void {
         [$relation, $property] = collect(explode('.', $property))
             ->pipe(fn (Collection $parts) => [
                 $parts->except(count($parts) - 1)->implode('.'),
