@@ -4,6 +4,7 @@ namespace TestMonitor\Searchable\Aspects;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use TestMonitor\Searchable\Weights;
 use Illuminate\Database\Eloquent\Builder;
 use TestMonitor\Searchable\Contracts\Search;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -30,17 +31,19 @@ class SearchPrefix implements Search
 
     /**
      * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query
+     * @param \TestMonitor\Searchable\Weights $weights
      * @param string $property
      * @param string $term
+     * @param int $weight
      *
      * @throws \InvalidArgumentException
      *
      * @return mixed
      */
-    public function __invoke(Builder $query, string $property, string $term): void
+    public function __invoke(Builder $query, Weights $weights, string $property, string $term, int $weight = 1): void
     {
         if ($this->isRelationProperty($query, $property)) {
-            $this->withRelationConstraint($query, $property, $term);
+            $this->withRelationConstraint($query, $weights, $property, $term, $weight);
 
             return;
         }
@@ -52,6 +55,8 @@ class SearchPrefix implements Search
             fn (Builder $query) => $query->where($query->qualifyColumn($property), '=', "$term"),
             fn (Builder $query) => $query->where($query->qualifyColumn($property), 'LIKE', "$term%")
         );
+
+        $weights->registerIf(empty($this->relationConstraints), $query, $weight);
     }
 
     /**
@@ -76,12 +81,14 @@ class SearchPrefix implements Search
 
     /**
      * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \TestMonitor\Searchable\Weights $weights
      * @param string $property
      * @param string $term
+     * @param int $weight
      *
      * @throws \RuntimeException
      */
-    protected function withRelationConstraint(Builder $query, string $property, string $term): void
+    protected function withRelationConstraint(Builder $query, Weights $weights, string $property, string $term, int $weight = 1): void
     {
         [$relation, $property] = collect(explode('.', $property))
             ->pipe(fn (Collection $parts) => [
@@ -89,10 +96,10 @@ class SearchPrefix implements Search
                 $parts->last(),
             ]);
 
-        $query->whereHas($relation, function (Builder $query) use ($property, $term) {
+        $query->whereHas($relation, function (Builder $query) use ($property, $term, $weight, $weights) {
             $this->relationConstraints[] = $property = $query->qualifyColumn($property);
 
-            $this->__invoke($query, $property, $term);
+            $this->__invoke($query, $weights, $property, $term, $weight);
         });
     }
 }

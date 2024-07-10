@@ -3,6 +3,7 @@
 namespace TestMonitor\Searchable\Test;
 
 use Illuminate\Http\Request;
+use TestMonitor\Searchable\Weights;
 use PHPUnit\Framework\Attributes\Test;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -38,9 +39,11 @@ class CustomSearchTest extends TestCase
             ->create();
 
         $this->domainSearcher = new class() implements Search {
-            public function __invoke(Builder $query, string $property, string $term): void
+            public function __invoke(Builder $query, Weights $weights, string $property, string $term, int $weight = 1): void
             {
                 $query->where($query->qualifyColumn($property), 'LIKE', "%@{$term}");
+
+                $weights->register($query, $weight);
             }
         };
     }
