@@ -147,10 +147,35 @@ class PostsController extends Controller
 }
 ```
 
+#### JSON match
+
+The JSON search aspect returns matches where the search query occurs anywhere within the given JSON attribute.
+
+By passing the ignoreKeys attribute the package will ignore the JSON key's as a match.
+
+```php
+use App\Models\Post;
+use Illuminate\Routing\Controller;
+use TestMonitor\Searchable\Aspects\SearchAspect;
+
+class PostsController extends Controller
+{
+    public function index()
+    {
+        return Post::query()
+            ->seachUsing([
+                SearchAspect::json(name: 'settings'),
+                SearchAspect::json(name: 'settings', ignoreKeys: true),
+            ])
+            ->get();
+    }
+}
+```
+
 #### Prefix match
 
-The Prefix aspect combines the exact and partial strategy with the ability to strip one or more characters from the search query. 
-This can be useful when your application provides an incremental code with a prefix to your user (say, ISSUE-12), 
+The Prefix aspect combines the exact and partial strategy with the ability to strip one or more characters from the search query.
+This can be useful when your application provides an incremental code with a prefix to your user (say, ISSUE-12),
 but only store the number in your database (which would be the number 12).
 
 As a default, the partial match strategy is used. Using the `exact` parameter, you can enable exact matching.
@@ -259,7 +284,7 @@ class PostsController extends Controller
 
 Use dotted notation to search through related model attributes.
 
-Let's say you want to search your posts based on their blog's title and description. Here's an example that 
+Let's say you want to search your posts based on their blog's title and description. Here's an example that
 implements these criteria:
 
 ```php

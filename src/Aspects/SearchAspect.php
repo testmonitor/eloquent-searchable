@@ -61,6 +61,17 @@ class SearchAspect
 
     /**
      * @param string $name
+     * @param bool $ignoreKeys
+     * @param int $weight
+     * @return \App\Models\Search\SearchAspect
+     */
+    public static function json(string $name, bool $ignoreKeys = false, int $weight = 1): self
+    {
+        return new self($name, new SearchJson($ignoreKeys), $weight);
+    }
+
+    /**
+     * @param string $name
      * @param \TestMonitor\Searchable\Contracts\Search $searchClass
      * @return \App\Models\Search\SearchAspect
      */
