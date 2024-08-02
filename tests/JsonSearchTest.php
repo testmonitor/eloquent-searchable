@@ -81,7 +81,7 @@ class JsonSearchTest extends TestCase
 
         // Then
         $this->assertInstanceOf(Collection::class, $results);
-        $this->assertCount(1, $results);
+        $this->assertCount(3, $results);
         $this->assertEquals($results->first()->name, $ticket->user->name);
     }
 
