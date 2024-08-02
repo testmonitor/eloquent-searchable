@@ -61,6 +61,16 @@ class SearchAspect
 
     /**
      * @param string $name
+     * @param int $weight
+     * @return \App\Models\Search\SearchAspect
+     */
+    public static function json(string $name, int $weight = 1): self
+    {
+        return new self($name, new SearchJson, $weight);
+    }
+
+    /**
+     * @param string $name
      * @param \TestMonitor\Searchable\Contracts\Search $searchClass
      * @return \App\Models\Search\SearchAspect
      */
