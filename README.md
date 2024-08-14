@@ -13,13 +13,13 @@ It is heavily inspired by Spatie's [Query Builder](https://github.com/spatie/lar
 
 - [Installation](#installation)
 - [Usage](#usage)
+  - [Search weighing](#search-weighing)
+  - [Search related models](#search-related-models)
 - [Examples](#examples)
   - [Exact match](#exact-match)
   - [Partial match](#partial-match)
   - [Search with prefix](#search-with-prefix)
-  - [Search related models](#search-related-models)
   - [Custom searcher](#custom-searcher)
-  - [Search weighing](#search-weighing)
 - [Tests](#tests)
 - [Changelog](#changelog)
 - [Contributing](#contributing)
@@ -99,6 +99,51 @@ The search query is automatically derived from the HTTP request. You can
 modify the HTTP query parameter in the configuration file. By default,
 the name `query` is used.
 
+### Search weighing
+Optionally you can use weights. Weighing prioritizes search criteria, placing results with higher weights at the top.
+
+```php
+use App\Models\Post;
+use Illuminate\Routing\Controller;
+use TestMonitor\Searchable\Aspects\SearchAspect;
+
+class PostsController extends Controller
+{
+    public function index()
+    {
+        return Post::query()
+            ->seachUsing([
+                SearchAspect::partial(name: 'title', weight: 20), // Matching results will be shown at the top.
+                SearchAspect::partial(name: 'summary', weight: 10), // Matching results will be shown after weight 20 results.
+                SearchAspect::partial('description'), // Searches without weight are at the bottom of the search results.
+            ])
+            ->get();
+    }
+}
+```
+
+### Search related models
+Use dotted notation to search through related model attributes.
+
+```php
+use App\Models\Post;
+use Illuminate\Routing\Controller;
+use TestMonitor\Searchable\Aspects\SearchAspect;
+
+class PostsController extends Controller
+{
+    public function index()
+    {
+        return Post::query()
+            ->seachUsing([
+                SearchAspect::exact('blog.title'),  // Searches the related blog title.
+                SearchAspect::partial('blog.description'), // Searches the related blog description.
+            ])
+            ->get();
+    }
+}
+```
+
 ## Examples
 
 ### Exact match
@@ -167,28 +212,6 @@ class IssuesController extends Controller
 }
 ```
 
-### Search related models
-Use dotted notation to search through related model attributes.
-
-```php
-use App\Models\Post;
-use Illuminate\Routing\Controller;
-use TestMonitor\Searchable\Aspects\SearchAspect;
-
-class PostsController extends Controller
-{
-    public function index()
-    {
-        return Post::query()
-            ->seachUsing([
-                SearchAspect::exact('blog.title'),  // Searches the related blog title.
-                SearchAspect::partial('blog.description'), // Searches the related blog description.
-            ])
-            ->get();
-    }
-}
-```
-
 ### Custom searcher
 Create your own custom searcher by implementing the `TestMonitor\Searchable\Contracts\Search` contract.
 
@@ -228,29 +251,6 @@ class PostsController extends Controller
         return Post::query()
             ->seachUsing([
                 SearchAspect::custom('name', new CustomSearch),
-            ])
-            ->get();
-    }
-}
-```
-
-### Search weighing
-Optionally you can use weights. Weighing prioritizes search criteria, placing results with higher weights at the top.
-
-```php
-use App\Models\Post;
-use Illuminate\Routing\Controller;
-use TestMonitor\Searchable\Aspects\SearchAspect;
-
-class PostsController extends Controller
-{
-    public function index()
-    {
-        return Post::query()
-            ->seachUsing([
-                SearchAspect::partial(name: 'title', weight: 20), // Matching results will be shown at the top.
-                SearchAspect::partial(name: 'summary', weight: 10), // Matching results will be shown after weight 20 results.
-                SearchAspect::partial('description'), // Searches without weight are at the bottom of the search results.
             ])
             ->get();
     }
