@@ -11,14 +11,22 @@ It is heavily inspired by Spatie's [Query Builder](https://github.com/spatie/lar
 
 ## Table of Contents
 
-- [Installation](#installation)
-- [Usage](#usage)
-- [Examples](#examples)
-- [Tests](#tests)
-- [Changelog](#changelog)
-- [Contributing](#contributing)
-- [Credits](#credits)
-- [License](#license)
+- [Eloquent Searchable](#eloquent-searchable)
+  - [Table of Contents](#table-of-contents)
+  - [Installation](#installation)
+  - [Usage](#usage)
+  - [Examples](#examples)
+    - [Exact match](#exact-match)
+    - [Partial match](#partial-match)
+    - [Search with prefix](#search-with-prefix)
+    - [Search related models](#search-related-models)
+    - [Custom searcher](#custom-searcher)
+    - [Search weighing](#search-weighing)
+  - [Tests](#tests)
+  - [Changelog](#changelog)
+  - [Contributing](#contributing)
+  - [Credits](#credits)
+  - [License](#license)
 
 ## Installation
 
@@ -94,6 +102,162 @@ modify the HTTP query parameter in the configuration file. By default,
 the name `query` is used.
 
 ## Examples
+
+### Exact match
+Only exact matches will be returned.
+
+```php
+use App\Models\Post;
+use Illuminate\Routing\Controller;
+use TestMonitor\Searchable\Aspects\SearchAspect;
+
+class PostsController extends Controller
+{
+    public function index()
+    {
+        return Post::query()
+            ->seachUsing([
+                SearchAspect::exact(name: 'title', weight: 10),  // Use weights to prioritize search results.
+                SearchAspect::exact('description'),
+            ])
+            ->get();
+    }
+}
+```
+
+### Partial match
+When the query term occurs within the given attribute, it will be returned.
+
+```php
+use App\Models\Post;
+use Illuminate\Routing\Controller;
+use TestMonitor\Searchable\Aspects\SearchAspect;
+
+class PostsController extends Controller
+{
+    public function index()
+    {
+        return Post::query()
+            ->seachUsing([
+                SearchAspect::partial(name: 'title', weight: 10),  // Use weights to prioritize search results.
+                SearchAspect::partial('description'),
+            ])
+            ->get();
+    }
+}
+```
+
+### Search with prefix
+Search for a result including a prefix. The prefix will be stripped of the search, e.g. `ISSUE-12` will be changed to `12`.
+
+```php
+use App\Models\Issue;
+use Illuminate\Routing\Controller;
+use TestMonitor\Searchable\Aspects\SearchAspect;
+
+class IssuesController extends Controller
+{
+    public function index()
+    {
+        return Issue::query()
+            ->seachUsing([
+                SearchAspect::prefix(name: 'code', prefix: 'ISSUE-', exact: true), // Exact search for ISSUE-QUERY => QUERY
+                SearchAspect::prefix(name: 'code', prefix: 'ISSUE-'), // Partial search for ISSUE-QUERY => %QUERY%
+            ])
+            ->get();
+    }
+}
+```
+
+### Search related models
+Use dotted notation to search through related model attributes.
+
+```php
+use App\Models\Post;
+use Illuminate\Routing\Controller;
+use TestMonitor\Searchable\Aspects\SearchAspect;
+
+class PostsController extends Controller
+{
+    public function index()
+    {
+        return Post::query()
+            ->seachUsing([
+                SearchAspect::exact('blog.title'),  // Searches the related blog title.
+                SearchAspect::partial('blog.description'), // Searches the related blog description.
+            ])
+            ->get();
+    }
+}
+```
+
+### Custom searcher
+Create your own custom searcher by implementing the `TestMonitor\Searchable\Contracts\Search` contract.
+
+Custom searcher example:
+```php
+use TestMonitor\Searchable\Weights;
+use Illuminate\Database\Eloquent\Builder;
+use TestMonitor\Searchable\Contracts\Search;
+
+class CustomSearch implements Search
+{
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query
+     * @param \TestMonitor\Searchable\Weights $weights
+     * @param string $property
+     * @param string $term
+     * @param int $weight
+     */
+    public function __invoke(Builder $query, Weights $weights, string $property, string $term, int $weight = 1): void
+    {
+        $query->where($property, $term); // Custom search functionality goes here.
+    }
+}
+```
+
+Implementation of the custom searcher:
+```php
+use App\Models\Post;
+use Illuminate\Routing\Controller;
+use App\Search\Aspects\CustomSearch;
+use TestMonitor\Searchable\Aspects\SearchAspect;
+
+class PostsController extends Controller
+{
+    public function index()
+    {
+        return Post::query()
+            ->seachUsing([
+                SearchAspect::custom('name', new CustomSearch),
+            ])
+            ->get();
+    }
+}
+```
+
+### Search weighing
+Optionally you can use weights. Weighing prioritizes search criteria, placing results with higher weights at the top.
+
+```php
+use App\Models\Post;
+use Illuminate\Routing\Controller;
+use TestMonitor\Searchable\Aspects\SearchAspect;
+
+class PostsController extends Controller
+{
+    public function index()
+    {
+        return Post::query()
+            ->seachUsing([
+                SearchAspect::partial(name: 'title', weight: 20), // Matching results will be shown at the top.
+                SearchAspect::partial(name: 'summary', weight: 10), // Matching results will be shown after weight 20 results.
+                SearchAspect::partial('description'), // Searches without weight are at the bottom of the search results.
+            ])
+            ->get();
+    }
+}
+```
 
 ## Tests
 
