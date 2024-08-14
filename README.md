@@ -11,22 +11,20 @@ It is heavily inspired by Spatie's [Query Builder](https://github.com/spatie/lar
 
 ## Table of Contents
 
-- [Eloquent Searchable](#eloquent-searchable)
-  - [Table of Contents](#table-of-contents)
-  - [Installation](#installation)
-  - [Usage](#usage)
-  - [Examples](#examples)
-    - [Exact match](#exact-match)
-    - [Partial match](#partial-match)
-    - [Search with prefix](#search-with-prefix)
-    - [Search related models](#search-related-models)
-    - [Custom searcher](#custom-searcher)
-    - [Search weighing](#search-weighing)
-  - [Tests](#tests)
-  - [Changelog](#changelog)
-  - [Contributing](#contributing)
-  - [Credits](#credits)
-  - [License](#license)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Examples](#examples)
+  - [Exact match](#exact-match)
+  - [Partial match](#partial-match)
+  - [Search with prefix](#search-with-prefix)
+  - [Search related models](#search-related-models)
+  - [Custom searcher](#custom-searcher)
+  - [Search weighing](#search-weighing)
+- [Tests](#tests)
+- [Changelog](#changelog)
+- [Contributing](#contributing)
+- [Credits](#credits)
+- [License](#license)
 
 ## Installation
 
