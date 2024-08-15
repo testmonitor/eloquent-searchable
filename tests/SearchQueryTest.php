@@ -105,7 +105,7 @@ class SearchQueryTest extends TestCase
     }
 
     #[Test]
-    public function it_will_fallback_on_exact_search_when_searchaspect_is_avoided()
+    public function it_will_fallback_on_exact_search_when_searchaspect_is_not_used()
     {
         // Given
         $this->app->bind(SearchRequest::class, fn () => SearchRequest::fromRequest(
