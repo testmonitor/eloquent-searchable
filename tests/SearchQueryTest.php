@@ -86,4 +86,23 @@ class SearchQueryTest extends TestCase
         $this->assertCount(3, $results);
         $this->assertEquals($results->first()->name, 'Thijs Kok');
     }
+
+    #[Test]
+    public function it_will_fall_back_on_exact_search_when_searchaspect_is_not_used()
+    {
+        // Given
+        $this->app->bind(SearchRequest::class, fn () => SearchRequest::fromRequest(
+            new Request(['query' => 'Thijs Kok'])
+        ));
+
+        // When
+        $results = User::query()
+            ->searchUsing(['name'])
+            ->get();
+
+        // Then
+        $this->assertInstanceOf(Collection::class, $results);
+        $this->assertCount(1, $results);
+        $this->assertEquals($results->first()->name, 'Thijs Kok');
+    }
 }
