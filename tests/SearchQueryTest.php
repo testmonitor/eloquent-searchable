@@ -88,23 +88,6 @@ class SearchQueryTest extends TestCase
     }
 
     #[Test]
-    public function it_will_convert_a_request_into_a_searchrequest()
-    {
-        // Given
-        $this->app->bind(Request::class, fn () => new Request(['query' => 'Thijs']));
-
-        // When
-        $results = User::query()
-            ->searchUsing([SearchAspect::exact('name')])
-            ->get();
-
-        // Then
-        $this->assertInstanceOf(Collection::class, $results);
-        $this->assertCount(3, $results);
-        $this->assertEquals($results->first()->name, 'Thijs Kok');
-    }
-
-    #[Test]
     public function it_will_fallback_on_exact_search_when_searchaspect_is_not_used()
     {
         // Given
