@@ -13,13 +13,9 @@ It is heavily inspired by Spatie's [Query Builder](https://github.com/spatie/lar
 
 - [Installation](#installation)
 - [Usage](#usage)
+  - [Aspects](#aspects)
   - [Search weighing](#search-weighing)
   - [Search related models](#search-related-models)
-- [Examples](#examples)
-  - [Exact match](#exact-match)
-  - [Partial match](#partial-match)
-  - [Search with prefix](#search-with-prefix)
-  - [Custom searcher](#custom-searcher)
 - [Tests](#tests)
 - [Changelog](#changelog)
 - [Contributing](#contributing)
@@ -99,8 +95,17 @@ The search query is automatically derived from the HTTP request. You can
 modify the HTTP query parameter in the configuration file. By default,
 the name `query` is used.
 
-### Search weighing
-Optionally you can use weights. Weighing prioritizes search criteria, placing results with higher weights at the top.
+### Aspects
+
+A model's search strategy is defined by search aspects. An aspect defines a matching configuration. For example,
+the exact search aspect perfoms an exact search on the provided attribute.
+
+Eloquent Searcheable provides multiple aspects out of the box. Additionally, you can also define your own
+matching configuration using the custom aspect.
+
+#### Exact match
+
+The Exact search aspect will only return matches that are equal to the search term.
 
 ```php
 use App\Models\Post;
@@ -113,17 +118,16 @@ class PostsController extends Controller
     {
         return Post::query()
             ->seachUsing([
-                SearchAspect::partial(name: 'title', weight: 20), // Matching results will be shown at the top.
-                SearchAspect::partial(name: 'summary', weight: 10), // Matching results will be shown after weight 20 results.
-                SearchAspect::partial('description'), // Searches without weight are at the bottom of the search results.
+                SearchAspect::exact(name: 'title'),
             ])
             ->get();
     }
 }
 ```
 
-### Search related models
-Use dotted notation to search through related model attributes.
+#### Partial match
+
+The Partial search aspect returns matches where the search query occurs anywhere within the given attribute.
 
 ```php
 use App\Models\Post;
@@ -136,62 +140,20 @@ class PostsController extends Controller
     {
         return Post::query()
             ->seachUsing([
-                SearchAspect::exact('blog.title'),  // Searches the related blog title.
-                SearchAspect::partial('blog.description'), // Searches the related blog description.
+                SearchAspect::partial(name: 'title'),
             ])
             ->get();
     }
 }
 ```
 
-## Examples
+#### Prefix match
 
-### Exact match
-Only exact matches will be returned.
+The Prefix aspect combines the exact and partial strategy with the ability to strip one or more characters from the search query. 
+This can be useful when your application provides an incremental code with a prefix to your user (say, ISSUE-12), 
+but only store the number in your database (which would be the number 12).
 
-```php
-use App\Models\Post;
-use Illuminate\Routing\Controller;
-use TestMonitor\Searchable\Aspects\SearchAspect;
-
-class PostsController extends Controller
-{
-    public function index()
-    {
-        return Post::query()
-            ->seachUsing([
-                SearchAspect::exact(name: 'title', weight: 10),  // Use weights to prioritize search results.
-                SearchAspect::exact('description'),
-            ])
-            ->get();
-    }
-}
-```
-
-### Partial match
-When the query term occurs within the given attribute, it will be returned.
-
-```php
-use App\Models\Post;
-use Illuminate\Routing\Controller;
-use TestMonitor\Searchable\Aspects\SearchAspect;
-
-class PostsController extends Controller
-{
-    public function index()
-    {
-        return Post::query()
-            ->seachUsing([
-                SearchAspect::partial(name: 'title', weight: 10),  // Use weights to prioritize search results.
-                SearchAspect::partial('description'),
-            ])
-            ->get();
-    }
-}
-```
-
-### Search with prefix
-Search for a result including a prefix. The prefix will be stripped of the search, e.g. `ISSUE-12` will be changed to `12`.
+As a default, the partial match strategy is used. Using the `exact` parameter, you can enable exact matching.
 
 ```php
 use App\Models\Issue;
@@ -204,24 +166,27 @@ class IssuesController extends Controller
     {
         return Issue::query()
             ->seachUsing([
-                SearchAspect::prefix(name: 'code', prefix: 'ISSUE-', exact: true), // Exact search for ISSUE-QUERY => QUERY
-                SearchAspect::prefix(name: 'code', prefix: 'ISSUE-'), // Partial search for ISSUE-QUERY => %QUERY%
+                SearchAspect::prefix(name: 'code', prefix: 'ISSUE-', exact: true),
+                SearchAspect::prefix(name: 'code', prefix: 'ISSUE-'),
             ])
             ->get();
     }
 }
 ```
 
-### Custom searcher
-Create your own custom searcher by implementing the `TestMonitor\Searchable\Contracts\Search` contract.
+#### Custom aspect
 
-Custom searcher example:
+You can create your own search aspect by creating a class that implements the `TestMonitor\Searchable\Contracts\Search` contract.
+
+Let's implement a new search aspect: a strategy that matches the beginning of an attribute. Your custom search aspect would look
+something like this:
+
 ```php
 use TestMonitor\Searchable\Weights;
 use Illuminate\Database\Eloquent\Builder;
 use TestMonitor\Searchable\Contracts\Search;
 
-class CustomSearch implements Search
+class StartsWithSearch implements Search
 {
     /**
      * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query
@@ -232,12 +197,13 @@ class CustomSearch implements Search
      */
     public function __invoke(Builder $query, Weights $weights, string $property, string $term, int $weight = 1): void
     {
-        $query->where($property, $term); // Custom search functionality goes here.
+        $query->where($property, 'like', "{$term}%");
     }
 }
 ```
 
-Implementation of the custom searcher:
+To use this custom aspect, define it in your search criteria like this:
+
 ```php
 use App\Models\Post;
 use Illuminate\Routing\Controller;
@@ -251,6 +217,64 @@ class PostsController extends Controller
         return Post::query()
             ->seachUsing([
                 SearchAspect::custom('name', new CustomSearch),
+            ])
+            ->get();
+    }
+}
+```
+
+### Search weighing
+
+Optionally, you can use search weights. Weighing prioritizes search criteria, placing results with higher weights at the top.
+
+Let's make a Post model searchable and use the following criteria:
+
+- A partial keyword match in the post's title should be ranked highest.
+- A partial keyword match in the summary should be ranked below any title match.
+- A partial keyword match in the description should be ranked below any other criteria.
+
+Here's an example that implements these criteria:
+
+```php
+use App\Models\Post;
+use Illuminate\Routing\Controller;
+use TestMonitor\Searchable\Aspects\SearchAspect;
+
+class PostsController extends Controller
+{
+    public function index()
+    {
+        return Post::query()
+            ->seachUsing([
+                SearchAspect::partial(name: 'title', weight: 20),
+                SearchAspect::partial(name: 'summary', weight: 10),
+                SearchAspect::partial('description'),
+            ])
+            ->get();
+    }
+}
+```
+
+### Search related models
+
+Use dotted notation to search through related model attributes.
+
+Let's say you want to search your posts based on their blog's title and description. Here's an example that 
+implements these criteria:
+
+```php
+use App\Models\Post;
+use Illuminate\Routing\Controller;
+use TestMonitor\Searchable\Aspects\SearchAspect;
+
+class PostsController extends Controller
+{
+    public function index()
+    {
+        return Post::query()
+            ->seachUsing([
+                SearchAspect::exact('blog.title'),
+                SearchAspect::partial('blog.description'),
             ])
             ->get();
     }
