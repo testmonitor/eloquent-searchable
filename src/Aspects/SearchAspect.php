@@ -61,13 +61,12 @@ class SearchAspect
 
     /**
      * @param string $name
-     * @param bool $ignoreKeys
      * @param int $weight
      * @return \App\Models\Search\SearchAspect
      */
-    public static function json(string $name, bool $ignoreKeys = false, int $weight = 1): self
+    public static function json(string $name, int $weight = 1): self
     {
-        return new self($name, new SearchJson($ignoreKeys), $weight);
+        return new self($name, new SearchJson, $weight);
     }
 
     /**

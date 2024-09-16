@@ -22,13 +22,6 @@ class SearchJson implements Search
     protected array $relationConstraints = [];
 
     /**
-     * @param bool $ignoreKeys
-     */
-    public function __construct(protected bool $ignoreKeys = false)
-    {
-    }
-
-    /**
      * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query
      * @param \TestMonitor\Searchable\Weights $weights
      * @param string $property
@@ -49,11 +42,7 @@ class SearchJson implements Search
             return;
         }
 
-        if ($this->ignoreKeys) {
-            $query->whereRaw("JSON_EXTRACT({$property}, '$.*') like \"%{$term}%\"");
-        } else {
-            $query->where($query->qualifyColumn($property), 'LIKE', "%{$term}%");
-        }
+        $query->whereRaw("JSON_EXTRACT({$property}, '$.*') like \"%{$term}%\"");
 
         $weights->registerIf(empty($this->relationConstraints), $query, $weight);
     }
