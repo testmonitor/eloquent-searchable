@@ -171,9 +171,9 @@ class PostsController extends Controller
 
 #### Prefix match
 
-The Prefix aspect combines the exact and partial strategy with the ability to strip one or more characters from the search query.
+The Prefix aspect combines the exact and partial strategy with the ability to strip one or more characters from the search query. 
 This can be useful when your application provides an incremental code with a prefix to your user (say, ISSUE-12),
-but only store the number in your database (which would be the number 12).
+but only store the number in your database (which would be the number 12). 
 
 As a default, the partial match strategy is used. Using the `exact` parameter, you can enable exact matching.
 
