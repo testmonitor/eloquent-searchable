@@ -173,7 +173,7 @@ class PostsController extends Controller
 
 The Prefix aspect combines the exact and partial strategy with the ability to strip one or more characters from the search query. 
 This can be useful when your application provides an incremental code with a prefix to your user (say, ISSUE-12),
-but only store the number in your database (which would be the number 12). 
+but only store the number in your database (which would be the number 12).
 
 As a default, the partial match strategy is used. Using the `exact` parameter, you can enable exact matching.
 
@@ -281,7 +281,7 @@ class PostsController extends Controller
 
 Use dotted notation to search through related model attributes.
 
-Let's say you want to search your posts based on their blog's title and description. Here's an example that
+Let's say you want to search your posts based on their blog's title and description. Here's an example that 
 implements these criteria:
 
 ```php
