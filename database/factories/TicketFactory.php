@@ -14,7 +14,7 @@ class TicketFactory extends Factory
         return [
             'name' => $this->faker->words(nb: 5, asText: true),
             'description' => $this->faker->text(),
-            'settings' => json_encode(['key' => $this->faker->uuid]),
+            'data' => json_encode(['key' => $this->faker->uuid]),
         ];
     }
 }

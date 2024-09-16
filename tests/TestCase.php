@@ -57,7 +57,7 @@ abstract class TestCase extends OrchestraTestCase
             $table->integer('code');
             $table->string('name');
             $table->text('description');
-            $table->json('settings');
+            $table->json('data');
             $table->unsignedInteger('user_id');
         });
     }
