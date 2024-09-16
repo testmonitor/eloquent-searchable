@@ -151,8 +151,6 @@ class PostsController extends Controller
 
 The JSON search aspect returns matches where the search query occurs anywhere within the given JSON attribute.
 
-By passing the ignoreKeys attribute the package will ignore the JSON key's as a match.
-
 ```php
 use App\Models\Post;
 use Illuminate\Routing\Controller;
@@ -165,7 +163,6 @@ class PostsController extends Controller
         return Post::query()
             ->seachUsing([
                 SearchAspect::json(name: 'settings'),
-                SearchAspect::json(name: 'settings', ignoreKeys: true),
             ])
             ->get();
     }
