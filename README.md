@@ -147,6 +147,28 @@ class PostsController extends Controller
 }
 ```
 
+#### JSON match
+
+The JSON search aspect returns matches where the search query occurs anywhere within the given JSON attribute.
+
+```php
+use App\Models\Post;
+use Illuminate\Routing\Controller;
+use TestMonitor\Searchable\Aspects\SearchAspect;
+
+class PostsController extends Controller
+{
+    public function index()
+    {
+        return Post::query()
+            ->seachUsing([
+                SearchAspect::json(name: 'settings'),
+            ])
+            ->get();
+    }
+}
+```
+
 #### Prefix match
 
 The Prefix aspect combines the exact and partial strategy with the ability to strip one or more characters from the search query. 
