@@ -49,7 +49,6 @@ abstract class TestCase extends OrchestraTestCase
             $table->increments('id');
             $table->string('name');
             $table->string('email');
-            $table->json('settings');
         });
 
         $builder->create('tickets', function (Blueprint $table) {
@@ -57,7 +56,6 @@ abstract class TestCase extends OrchestraTestCase
             $table->integer('code');
             $table->string('name');
             $table->text('description');
-            $table->json('data');
             $table->unsignedInteger('user_id');
         });
     }

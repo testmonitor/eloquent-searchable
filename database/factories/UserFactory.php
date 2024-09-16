@@ -14,7 +14,6 @@ class UserFactory extends Factory
         return [
             'name' => $this->faker->name,
             'email' => $this->faker->email,
-            'settings' => json_encode(['key' => $this->faker->uuid]),
         ];
     }
 }
