@@ -42,6 +42,10 @@ class SearchPartial implements Search
 
         $query->where($query->qualifyColumn($property), 'LIKE', "%{$term}%");
 
+        foreach($this->parseTerms($term) as $term) {
+            $query->orWhere($query->qualifyColumn($property), 'LIKE', "%{$term}%");
+        }
+
         $weights->registerIf(empty($this->relationConstraints), $query, $weight);
     }
 
@@ -92,5 +96,17 @@ class SearchPartial implements Search
 
             $this->__invoke($query, $weights, $property, $term, $weight);
         });
+    }
+
+    /**
+     * Parse a search string into separate terms.
+     *
+     * @param string $term
+     *
+     * @return array
+     */
+    protected function parseTerms(string $term): array
+    {
+        return str_getcsv(trim($term), ' ', '"');
     }
 }
