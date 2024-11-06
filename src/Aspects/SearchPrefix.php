@@ -8,6 +8,7 @@ use TestMonitor\Searchable\Weights;
 use Illuminate\Database\Eloquent\Builder;
 use TestMonitor\Searchable\Contracts\Search;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use TestMonitor\Searchable\Concerns\ExtractsQuotedPhrases;
 
 /**
  * @template TModelClass of \Illuminate\Database\Eloquent\Model
@@ -16,6 +17,8 @@ use Illuminate\Database\Eloquent\Relations\Relation;
  */
 class SearchPrefix implements Search
 {
+    use ExtractsQuotedPhrases;
+
     /**
      * @var array
      */
@@ -48,15 +51,56 @@ class SearchPrefix implements Search
             return;
         }
 
-        $term = preg_replace('/^' . preg_quote($this->prefix, '/') . '/i', '', $term);
-
         $query->when(
             $this->exact,
-            fn (Builder $query) => $query->where($query->qualifyColumn($property), '=', "$term"),
-            fn (Builder $query) => $query->where($query->qualifyColumn($property), 'LIKE', "$term%")
+            fn (Builder $query) => $this->searchForExactMatch($query, $property, $term),
+            fn (Builder $query) => $this->searchForPartialMatch($query, $property, $term)
         );
 
         $weights->registerIf(empty($this->relationConstraints), $query, $weight);
+    }
+
+    /**
+     * Search for an exact match.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $property
+     * @param string $term
+     */
+    protected function searchForExactMatch(Builder $query, string $property, string $term): void
+    {
+        $unquoted = $this->stripQuotedPhrases($term);
+
+        $query->where(
+            $query->qualifyColumn($property),
+            '=',
+            $this->stripPrefix($unquoted)
+        );
+    }
+
+    /**
+     * Search for a partial match.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $property
+     * @param string $term
+     */
+    protected function searchForPartialMatch(Builder $query, string $property, string $term): void
+    {
+        foreach ($this->extractQuotedPhrases($term) as $term) {
+            $query->where($query->qualifyColumn($property), 'LIKE', $this->stripPrefix($term) . '%');
+        }
+    }
+
+    /**
+     * Strip defined prefix from a search term.
+     *
+     * @param string $term
+     * @return string
+     */
+    protected function stripPrefix(string $term): string
+    {
+        return preg_replace('/^' . preg_quote($this->prefix, '/') . '/i', '', $term);
     }
 
     /**
