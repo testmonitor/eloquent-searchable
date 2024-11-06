@@ -27,7 +27,7 @@ class PrefixSearchTest extends TestCase
     }
 
     #[Test]
-    public function it_will_find_records_using_an_prefixed_match()
+    public function it_will_find_records_using_a_prefixed_match()
     {
         // Given
         $this->app->bind(SearchRequest::class, fn () => SearchRequest::fromRequest(
@@ -46,7 +46,7 @@ class PrefixSearchTest extends TestCase
     }
 
     #[Test]
-    public function it_will_find_records_using_an_prefixed_match_without_using_the_prefix_in_the_query()
+    public function it_will_find_records_using_a_prefixed_match_without_using_the_prefix_in_the_query()
     {
         // Given
         $this->app->bind(SearchRequest::class, fn () => SearchRequest::fromRequest(
@@ -56,6 +56,25 @@ class PrefixSearchTest extends TestCase
         // When
         $results = Ticket::query()
             ->searchUsing([SearchAspect::prefix('code', 'T-')])
+            ->get();
+
+        // Then
+        $this->assertInstanceOf(Collection::class, $results);
+        $this->assertCount(1, $results);
+        $this->assertEquals($results->first()->code, 'T-11');
+    }
+
+    #[Test]
+    public function it_will_find_records_using_a_prefixed_match_and_quoted_search_term()
+    {
+        // Given
+        $this->app->bind(SearchRequest::class, fn () => SearchRequest::fromRequest(
+            new Request(['query' => '"T-11"'])
+        ));
+
+        // When
+        $results = Ticket::query()
+            ->searchUsing([SearchAspect::prefix('code', 'T-', true)])
             ->get();
 
         // Then

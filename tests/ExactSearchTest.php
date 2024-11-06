@@ -64,6 +64,25 @@ class ExactSearchTest extends TestCase
     }
 
     #[Test]
+    public function it_will_find_records_using_an_exact_match_and_quoted_search_term()
+    {
+        // Given
+        $this->app->bind(SearchRequest::class, fn () => SearchRequest::fromRequest(
+            new Request(['query' => '"Frank Keulen"'])
+        ));
+
+        // When
+        $results = User::query()
+            ->searchUsing([SearchAspect::exact('name')])
+            ->get();
+
+        // Then
+        $this->assertInstanceOf(Collection::class, $results);
+        $this->assertCount(1, $results);
+        $this->assertEquals($results->first()->name, 'Frank Keulen');
+    }
+
+    #[Test]
     public function it_will_find_records_using_an_exact_match_and_multiple_fields()
     {
         // Given

@@ -23,11 +23,12 @@ class PartialSearchTest extends TestCase
         parent::setUp();
 
         $this->users = User::factory()
-            ->count(3)
+            ->count(4)
             ->state(new Sequence(
                 ['name' => 'Thijs Kok', 'email' => 'thijs@email.com'],
                 ['name' => 'Frank Keulen', 'email' => 'frank@email.com'],
                 ['name' => 'Stephan Grootveld', 'email' => 'stephan@email.com'],
+                ['name' => 'Jan Thijssen', 'email' => 'jan@email.com'],
             ))
             ->create();
 
@@ -45,11 +46,31 @@ class PartialSearchTest extends TestCase
     }
 
     #[Test]
-    public function it_will_find_records_using_an_exact_match()
+    public function it_will_find_records_using_a_partial_match()
     {
         // Given
         $this->app->bind(SearchRequest::class, fn () => SearchRequest::fromRequest(
             new Request(['query' => 'Thijs'])
+        ));
+
+        // When
+        $results = User::query()
+            ->searchUsing([SearchAspect::partial('name')])
+            ->get();
+
+        // Then
+        $this->assertInstanceOf(Collection::class, $results);
+        $this->assertCount(2, $results);
+        $this->assertEquals($results->first()->name, 'Thijs Kok');
+        $this->assertEquals($results->last()->name, 'Jan Thijssen');
+    }
+
+    #[Test]
+    public function it_will_find_records_using_a_partial_match_and_quoted_search_term()
+    {
+        // Given
+        $this->app->bind(SearchRequest::class, fn () => SearchRequest::fromRequest(
+            new Request(['query' => '"Thijs Kok"'])
         ));
 
         // When
@@ -64,7 +85,7 @@ class PartialSearchTest extends TestCase
     }
 
     #[Test]
-    public function it_will_find_records_using_an_exact_match_and_multiple_fields()
+    public function it_will_find_records_using_a_partial_match_and_multiple_fields()
     {
         // Given
         $this->app->bind(SearchRequest::class, fn () => SearchRequest::fromRequest(
@@ -83,13 +104,11 @@ class PartialSearchTest extends TestCase
     }
 
     #[Test]
-    public function it_will_find_records_using_an_exact_match_using_a_nested_field()
+    public function it_will_find_records_using_a_partial_match_using_a_nested_field()
     {
         // Given
-        $ticket = Ticket::first();
-
         $this->app->bind(SearchRequest::class, fn () => SearchRequest::fromRequest(
-            new Request(['query' => strstr($ticket->name, ' ', true)])
+            new Request(['query' => 'Frank'])
         ));
 
         // When
@@ -100,11 +119,11 @@ class PartialSearchTest extends TestCase
         // Then
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertCount(1, $results);
-        $this->assertEquals($results->first()->name, $ticket->user->name);
+        $this->assertEquals($results->first()->name, 'Frank Keulen');
     }
 
     #[Test]
-    public function it_doesnt_return_records_when_an_exact_match_does_not_exists()
+    public function it_doesnt_return_records_when_a_partial_match_does_not_exists()
     {
         // Given
         $this->app->bind(SearchRequest::class, fn () => SearchRequest::fromRequest(

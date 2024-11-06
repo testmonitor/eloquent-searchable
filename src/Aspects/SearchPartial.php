@@ -8,6 +8,7 @@ use TestMonitor\Searchable\Weights;
 use Illuminate\Database\Eloquent\Builder;
 use TestMonitor\Searchable\Contracts\Search;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use TestMonitor\Searchable\Concerns\ExtractsQuotedPhrases;
 
 /**
  * @template TModelClass of \Illuminate\Database\Eloquent\Model
@@ -16,6 +17,8 @@ use Illuminate\Database\Eloquent\Relations\Relation;
  */
 class SearchPartial implements Search
 {
+    use ExtractsQuotedPhrases;
+
     /**
      * @var array
      */
@@ -40,7 +43,9 @@ class SearchPartial implements Search
             return;
         }
 
-        $query->where($query->qualifyColumn($property), 'LIKE', "%{$term}%");
+        foreach ($this->extractQuotedPhrases($term) as $term) {
+            $query->where($query->qualifyColumn($property), 'LIKE', "%{$term}%");
+        }
 
         $weights->registerIf(empty($this->relationConstraints), $query, $weight);
     }
