@@ -8,7 +8,10 @@ use TestMonitor\Searchable\Weights;
 
 class SearchAspect
 {
-    public function __construct(protected string $name, protected Search $searchClass, protected int $weight = 1) {}
+    public function __construct(protected string $name, protected Search $searchClass, protected int $weight = 1)
+    {
+        //
+    }
 
     public function search(Builder $query, Weights $weights, string $term): void
     {
