@@ -2,13 +2,14 @@
 
 namespace TestMonitor\Searchable\Aspects;
 
-use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
-use TestMonitor\Searchable\Weights;
 use Illuminate\Database\Eloquent\Builder;
-use TestMonitor\Searchable\Contracts\Search;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use TestMonitor\Searchable\Concerns\ExtractsQuotedPhrases;
+use TestMonitor\Searchable\Contracts\Search;
+use TestMonitor\Searchable\Weights;
 
 /**
  * @template TModelClass of \Illuminate\Database\Eloquent\Model
@@ -19,29 +20,18 @@ class SearchPrefix implements Search
 {
     use ExtractsQuotedPhrases;
 
-    /**
-     * @var array
-     */
     protected array $relationConstraints = [];
 
-    /**
-     * @param string $prefix
-     * @param bool $exact
-     */
     public function __construct(protected string $prefix, protected bool $exact = false)
     {
+        //
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query
-     * @param \TestMonitor\Searchable\Weights $weights
-     * @param string $property
-     * @param string $term
-     * @param int $weight
+     * @param Builder<Model> $query
+     * @return mixed
      *
      * @throws \InvalidArgumentException
-     *
-     * @return mixed
      */
     public function __invoke(Builder $query, Weights $weights, string $property, string $term, int $weight = 1): void
     {
@@ -62,10 +52,6 @@ class SearchPrefix implements Search
 
     /**
      * Search for an exact match.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $property
-     * @param string $term
      */
     protected function searchForExactMatch(Builder $query, string $property, string $term): void
     {
@@ -80,10 +66,6 @@ class SearchPrefix implements Search
 
     /**
      * Search for a partial match.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $property
-     * @param string $term
      */
     protected function searchForPartialMatch(Builder $query, string $property, string $term): void
     {
@@ -94,20 +76,12 @@ class SearchPrefix implements Search
 
     /**
      * Strip defined prefix from a search term.
-     *
-     * @param string $term
-     * @return string
      */
     protected function stripPrefix(string $term): string
     {
         return preg_replace('/^' . preg_quote($this->prefix, '/') . '/i', '', $term);
     }
 
-    /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $property
-     * @return bool
-     */
     protected function isRelationProperty(Builder $query, string $property): bool
     {
         if (! Str::contains($property, '.')) {
@@ -124,12 +98,6 @@ class SearchPrefix implements Search
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \TestMonitor\Searchable\Weights $weights
-     * @param string $property
-     * @param string $term
-     * @param int $weight
-     *
      * @throws \RuntimeException
      */
     protected function withRelationConstraint(

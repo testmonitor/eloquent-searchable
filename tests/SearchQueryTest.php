@@ -2,22 +2,22 @@
 
 namespace TestMonitor\Searchable\Test;
 
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Http\Request;
 use PHPUnit\Framework\Attributes\Test;
-use Illuminate\Database\Eloquent\Collection;
-use TestMonitor\Searchable\Test\Models\User;
 use TestMonitor\Searchable\Aspects\SearchAspect;
 use TestMonitor\Searchable\Requests\SearchRequest;
-use Illuminate\Database\Eloquent\Factories\Sequence;
+use TestMonitor\Searchable\Test\Models\User;
 
 class SearchQueryTest extends TestCase
 {
     /**
-     * @var \Illuminate\Database\Eloquent\Collection
+     * @var Collection
      */
     protected $users;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
