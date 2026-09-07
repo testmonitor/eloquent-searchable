@@ -22,7 +22,10 @@ class SearchPrefix implements Search
 
     protected array $relationConstraints = [];
 
-    public function __construct(protected string $prefix, protected bool $exact = false) {}
+    public function __construct(protected string $prefix, protected bool $exact = false)
+    {
+        //
+    }
 
     /**
      * @param Builder<Model> $query
