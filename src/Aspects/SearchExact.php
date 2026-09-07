@@ -2,13 +2,14 @@
 
 namespace TestMonitor\Searchable\Aspects;
 
-use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
-use TestMonitor\Searchable\Weights;
 use Illuminate\Database\Eloquent\Builder;
-use TestMonitor\Searchable\Contracts\Search;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use TestMonitor\Searchable\Concerns\ExtractsQuotedPhrases;
+use TestMonitor\Searchable\Contracts\Search;
+use TestMonitor\Searchable\Weights;
 
 /**
  * @template TModelClass of \Illuminate\Database\Eloquent\Model
@@ -19,21 +20,13 @@ class SearchExact implements Search
 {
     use ExtractsQuotedPhrases;
 
-    /**
-     * @var array
-     */
     protected array $relationConstraints = [];
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query
-     * @param \TestMonitor\Searchable\Weights $weights
-     * @param string $property
-     * @param string $term
-     * @param int $weight
+     * @param Builder<Model> $query
+     * @return mixed
      *
      * @throws \InvalidArgumentException
-     *
-     * @return mixed
      */
     public function __invoke(Builder $query, Weights $weights, string $property, string $term, int $weight = 1): void
     {
@@ -48,11 +41,6 @@ class SearchExact implements Search
         $weights->registerIf(empty($this->relationConstraints), $query, $weight);
     }
 
-    /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $property
-     * @return bool
-     */
     protected function isRelationProperty(Builder $query, string $property): bool
     {
         if (! Str::contains($property, '.')) {
@@ -69,12 +57,6 @@ class SearchExact implements Search
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \TestMonitor\Searchable\Weights $weights
-     * @param string $property
-     * @param string $term
-     * @param int $weight
-     *
      * @throws \RuntimeException
      */
     protected function withRelationConstraint(

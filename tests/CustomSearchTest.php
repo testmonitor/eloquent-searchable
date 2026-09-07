@@ -2,30 +2,30 @@
 
 namespace TestMonitor\Searchable\Test;
 
-use Illuminate\Http\Request;
-use TestMonitor\Searchable\Weights;
-use PHPUnit\Framework\Attributes\Test;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use TestMonitor\Searchable\Contracts\Search;
-use TestMonitor\Searchable\Test\Models\User;
-use TestMonitor\Searchable\Aspects\SearchAspect;
-use TestMonitor\Searchable\Requests\SearchRequest;
 use Illuminate\Database\Eloquent\Factories\Sequence;
+use Illuminate\Http\Request;
+use PHPUnit\Framework\Attributes\Test;
+use TestMonitor\Searchable\Aspects\SearchAspect;
+use TestMonitor\Searchable\Contracts\Search;
+use TestMonitor\Searchable\Requests\SearchRequest;
+use TestMonitor\Searchable\Test\Models\User;
+use TestMonitor\Searchable\Weights;
 
 class CustomSearchTest extends TestCase
 {
     /**
-     * @var \Illuminate\Database\Eloquent\Collection
+     * @var Collection
      */
     protected $users;
 
     /**
-     * @var \TestMonitor\Searchable\Contracts\Search
+     * @var Search
      */
     protected $domainSearcher;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -38,7 +38,8 @@ class CustomSearchTest extends TestCase
             ))
             ->create();
 
-        $this->domainSearcher = new class() implements Search {
+        $this->domainSearcher = new class implements Search
+        {
             public function __invoke(Builder $query, Weights $weights, string $property, string $term, int $weight = 1): void
             {
                 $query->where($query->qualifyColumn($property), 'LIKE', "%@{$term}");
@@ -58,7 +59,7 @@ class CustomSearchTest extends TestCase
 
         // When
         $results = User::query()
-            ->searchUsing([SearchAspect::custom('email', new $this->domainSearcher())])
+            ->searchUsing([SearchAspect::custom('email', new $this->domainSearcher)])
             ->get();
 
         // Then
@@ -77,7 +78,7 @@ class CustomSearchTest extends TestCase
 
         // When
         $results = User::query()
-            ->searchUsing([SearchAspect::custom('email', new $this->domainSearcher())])
+            ->searchUsing([SearchAspect::custom('email', new $this->domainSearcher)])
             ->get();
 
         // Then

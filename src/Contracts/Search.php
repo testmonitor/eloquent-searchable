@@ -2,8 +2,8 @@
 
 namespace TestMonitor\Searchable\Contracts;
 
-use TestMonitor\Searchable\Weights;
 use Illuminate\Database\Eloquent\Builder;
+use TestMonitor\Searchable\Weights;
 
 /**
  * @template TModelClass of \Illuminate\Database\Eloquent\Model
@@ -11,11 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 interface Search
 {
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<TModelClass> $query
-     * @param \TestMonitor\Searchable\Weights $weights
-     * @param string $property
-     * @param string $term
-     * @param int $weight
+     * @param Builder<TModelClass> $query
      * @return mixed
      */
     public function __invoke(Builder $query, Weights $weights, string $property, string $term, int $weight = 1): void;
