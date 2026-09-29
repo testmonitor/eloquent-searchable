@@ -12,7 +12,6 @@ interface Search
 {
     /**
      * @param Builder<TModelClass> $query
-     * @return mixed
      */
     public function __invoke(Builder $query, Weights $weights, string $property, string $term, int $weight = 1): void;
 }
