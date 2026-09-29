@@ -10,18 +10,13 @@ use TestMonitor\Searchable\Aspects\SearchAspect;
 use TestMonitor\Searchable\Requests\SearchRequest;
 use TestMonitor\Searchable\Test\Models\User;
 
-class SearchQueryTest extends TestCase
+final class SearchQueryTest extends TestCase
 {
-    /**
-     * @var Collection
-     */
-    protected $users;
-
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->users = User::factory()
+        User::factory()
             ->count(3)
             ->state(new Sequence(
                 ['name' => 'Thijs Kok', 'email' => 'thijs@email.com'],
@@ -49,7 +44,7 @@ class SearchQueryTest extends TestCase
         // Then
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertCount(1, $results);
-        $this->assertEquals($results->first()->name, 'Thijs Kok');
+        $this->assertEquals('Thijs Kok', $results->first()->name);
     }
 
     #[Test]
@@ -68,7 +63,7 @@ class SearchQueryTest extends TestCase
         // Then
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertCount(3, $results);
-        $this->assertEquals($results->first()->name, 'Thijs Kok');
+        $this->assertEquals('Thijs Kok', $results->first()->name);
     }
 
     #[Test]
@@ -84,7 +79,7 @@ class SearchQueryTest extends TestCase
         // Then
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertCount(3, $results);
-        $this->assertEquals($results->first()->name, 'Thijs Kok');
+        $this->assertEquals('Thijs Kok', $results->first()->name);
     }
 
     #[Test]
@@ -103,6 +98,6 @@ class SearchQueryTest extends TestCase
         // Then
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertCount(1, $results);
-        $this->assertEquals($results->first()->name, 'Thijs Kok');
+        $this->assertEquals('Thijs Kok', $results->first()->name);
     }
 }

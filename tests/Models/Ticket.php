@@ -18,7 +18,7 @@ class Ticket extends Model
 
     public $guarded = [];
 
-    public static function booted()
+    protected static function booted()
     {
         static::creating(function (Ticket $ticket) {
             $ticket->code = (int) Ticket::latest('code')->first()?->getAttributes()['code'] + 1;

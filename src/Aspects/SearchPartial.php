@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
+use RuntimeException;
 use TestMonitor\Searchable\Concerns\ExtractsQuotedPhrases;
 use TestMonitor\Searchable\Contracts\Search;
 use TestMonitor\Searchable\Weights;
@@ -14,7 +16,7 @@ use TestMonitor\Searchable\Weights;
 /**
  * @template TModelClass of \Illuminate\Database\Eloquent\Model
  *
- * @template-implements \TestMonitor\Searchable\Contracts\Search<TModelClass>
+ * @template-implements Search<TModelClass>
  */
 class SearchPartial implements Search
 {
@@ -25,7 +27,7 @@ class SearchPartial implements Search
     /**
      * @param Builder<Model> $query
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __invoke(Builder $query, Weights $weights, string $property, string $term, int $weight = 1): void
     {
@@ -58,7 +60,7 @@ class SearchPartial implements Search
     }
 
     /**
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     protected function withRelationConstraint(
         Builder $query,

@@ -10,18 +10,13 @@ use TestMonitor\Searchable\Aspects\SearchAspect;
 use TestMonitor\Searchable\Requests\SearchRequest;
 use TestMonitor\Searchable\Test\Models\User;
 
-class WeightedSearchTest extends TestCase
+final class WeightedSearchTest extends TestCase
 {
-    /**
-     * @var Collection
-     */
-    protected $users;
-
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->users = User::factory()
+        User::factory()
             ->count(3)
             ->state(new Sequence(
                 ['name' => 'Alice D.', 'email' => 'doe@email.com'],
@@ -50,6 +45,6 @@ class WeightedSearchTest extends TestCase
         // Then
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertCount(3, $results);
-        $this->assertEquals($results->first()->name, 'Bob Doe');
+        $this->assertEquals('Bob Doe', $results->first()->name);
     }
 }

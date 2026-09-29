@@ -5,7 +5,7 @@ namespace TestMonitor\Searchable\Test;
 use PHPUnit\Framework\Attributes\Test;
 use TestMonitor\Searchable\Aspects\SearchAspect;
 
-class SearchAspectTest extends TestCase
+final class SearchAspectTest extends TestCase
 {
     #[Test]
     public function it_can_retrieve_the_name_of_a_searchaspect()
@@ -17,7 +17,7 @@ class SearchAspectTest extends TestCase
         $name = $aspect->getName();
 
         // Then
-        $this->assertEquals('foobar', $name);
+        $this->assertSame('foobar', $name);
     }
 
     #[Test]
@@ -30,6 +30,6 @@ class SearchAspectTest extends TestCase
         $weight = $aspect->getWeight();
 
         // Then
-        $this->assertEquals(100, $weight);
+        $this->assertSame(100, $weight);
     }
 }

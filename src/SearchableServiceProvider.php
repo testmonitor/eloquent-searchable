@@ -13,7 +13,7 @@ class SearchableServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            dirname(__DIR__) . '/config/searchable.php' => config_path('searchable.php'),
+            __DIR__ . '/../config/searchable.php' => config_path('searchable.php'),
         ], 'config');
 
         $this->mergeConfigFrom(__DIR__ . '/../config/searchable.php', 'searchable');
@@ -24,8 +24,6 @@ class SearchableServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(SearchRequest::class, function ($app) {
-            return SearchRequest::fromRequest($app['request']);
-        });
+        $this->app->bind(SearchRequest::class, fn ($app) => SearchRequest::fromRequest($app['request']));
     }
 }

@@ -13,13 +13,8 @@ use TestMonitor\Searchable\Requests\SearchRequest;
 use TestMonitor\Searchable\Test\Models\User;
 use TestMonitor\Searchable\Weights;
 
-class CustomSearchTest extends TestCase
+final class CustomSearchTest extends TestCase
 {
-    /**
-     * @var Collection
-     */
-    protected $users;
-
     /**
      * @var Search
      */
@@ -29,7 +24,7 @@ class CustomSearchTest extends TestCase
     {
         parent::setUp();
 
-        $this->users = User::factory()
+        User::factory()
             ->count(3)
             ->state(new Sequence(
                 ['name' => 'Thijs Kok', 'email' => 'thijs@email.com'],
@@ -65,7 +60,7 @@ class CustomSearchTest extends TestCase
         // Then
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertCount(3, $results);
-        $this->assertEquals($results->first()->name, 'Thijs Kok');
+        $this->assertEquals('Thijs Kok', $results->first()->name);
     }
 
     #[Test]

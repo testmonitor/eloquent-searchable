@@ -23,7 +23,7 @@ trait Searchable
     {
         $aspects = is_array($aspects) ? $aspects : func_get_args();
 
-        $this->searchRequest = $request
+        $this->searchRequest = $request instanceof Request
             ? SearchRequest::fromRequest($request)
             : app(SearchRequest::class);
 

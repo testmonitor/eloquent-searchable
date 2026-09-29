@@ -11,18 +11,13 @@ use TestMonitor\Searchable\Requests\SearchRequest;
 use TestMonitor\Searchable\Test\Models\Ticket;
 use TestMonitor\Searchable\Test\Models\User;
 
-class ExactSearchTest extends TestCase
+final class ExactSearchTest extends TestCase
 {
-    /**
-     * @var Collection
-     */
-    protected $users;
-
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->users = User::factory()
+        $users = User::factory()
             ->count(3)
             ->state(new Sequence(
                 ['name' => 'Thijs Kok', 'email' => 'thijs@email.com'],
@@ -31,7 +26,7 @@ class ExactSearchTest extends TestCase
             ))
             ->create();
 
-        $this->users->each(function (User $user) {
+        $users->each(function (User $user) {
             Ticket::factory()
                 ->count(3)
                 ->state(new Sequence(
@@ -60,7 +55,7 @@ class ExactSearchTest extends TestCase
         // Then
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertCount(1, $results);
-        $this->assertEquals($results->first()->name, 'Frank Keulen');
+        $this->assertEquals('Frank Keulen', $results->first()->name);
     }
 
     #[Test]
@@ -79,7 +74,7 @@ class ExactSearchTest extends TestCase
         // Then
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertCount(1, $results);
-        $this->assertEquals($results->first()->name, 'Frank Keulen');
+        $this->assertEquals('Frank Keulen', $results->first()->name);
     }
 
     #[Test]
@@ -98,7 +93,7 @@ class ExactSearchTest extends TestCase
         // Then
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertCount(1, $results);
-        $this->assertEquals($results->first()->name, 'Thijs Kok');
+        $this->assertEquals('Thijs Kok', $results->first()->name);
     }
 
     #[Test]

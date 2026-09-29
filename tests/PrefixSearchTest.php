@@ -10,13 +10,8 @@ use TestMonitor\Searchable\Requests\SearchRequest;
 use TestMonitor\Searchable\Test\Models\Ticket;
 use TestMonitor\Searchable\Test\Models\User;
 
-class PrefixSearchTest extends TestCase
+final class PrefixSearchTest extends TestCase
 {
-    /**
-     * @var Collection
-     */
-    protected $users;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -42,7 +37,7 @@ class PrefixSearchTest extends TestCase
         // Then
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertCount(1, $results);
-        $this->assertEquals($results->first()->code, 'T-11');
+        $this->assertEquals('T-11', $results->first()->code);
     }
 
     #[Test]
@@ -61,7 +56,7 @@ class PrefixSearchTest extends TestCase
         // Then
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertCount(1, $results);
-        $this->assertEquals($results->first()->code, 'T-11');
+        $this->assertEquals('T-11', $results->first()->code);
     }
 
     #[Test]
@@ -80,7 +75,7 @@ class PrefixSearchTest extends TestCase
         // Then
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertCount(1, $results);
-        $this->assertEquals($results->first()->code, 'T-11');
+        $this->assertEquals('T-11', $results->first()->code);
     }
 
     #[Test]

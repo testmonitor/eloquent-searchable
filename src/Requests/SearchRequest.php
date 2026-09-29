@@ -3,13 +3,14 @@
 namespace TestMonitor\Searchable\Requests;
 
 use Illuminate\Http\Request;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class SearchRequest extends Request
 {
     /**
      * @throws BadRequestException
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public static function fromRequest(Request $request): self
     {
