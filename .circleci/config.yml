@@ -33,19 +33,19 @@ jobs:
             - attach_workspace:
                   at: .
             - run:
-                  name: PHP CS Fixer
-                  command: |
-                      mkdir -p ./logs/phpcsfixer
-                      vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php --diff --dry-run --format=junit > logs/phpcsfixer/junit.xml
+                name: Pint
+                command: |
+                    mkdir -p ./logs/pint
+                    vendor/bin/pint --test --format=junit > logs/pint/junit.xml
             - run:
                   name: PHPCS
                   command: |
                       mkdir -p ./logs/phpcs
-                      vendor/bin/phpcs --standard="PSR1,PSR2" -v --report=junit --report-file=logs/phpcs/junit.xml src/
+                      vendor/bin/phpcs -v --report=junit --report-file=logs/phpcs/junit.xml src/
 
             - store_artifacts:
-                  path: ./logs/phpcsfixer
-                  destination: phpcsfixer
+                  path: ./logs/pint
+                  destination: pint
             - store_artifacts:
                   path: ./logs/phpcs
                   destination: phpcs
