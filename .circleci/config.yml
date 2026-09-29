@@ -44,8 +44,8 @@ jobs:
                       vendor/bin/phpcs --standard="PSR1,PSR2" -v --report=junit --report-file=logs/phpcs/junit.xml src/
 
             - store_artifacts:
-                  path: ./logs/phpcsfixer
-                  destination: phpcsfixer
+                  path: ./logs/pint
+                  destination: pint
             - store_artifacts:
                   path: ./logs/phpcs
                   destination: phpcs
