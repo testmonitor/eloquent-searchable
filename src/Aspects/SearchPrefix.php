@@ -14,7 +14,7 @@ use TestMonitor\Searchable\Weights;
 /**
  * @template TModelClass of \Illuminate\Database\Eloquent\Model
  *
- * @template-implements \App\Models\Search\Search<TModelClass>
+ * @template-implements \TestMonitor\Searchable\Contracts\Search<TModelClass>
  */
 class SearchPrefix implements Search
 {
@@ -29,7 +29,6 @@ class SearchPrefix implements Search
 
     /**
      * @param Builder<Model> $query
-     * @return mixed
      *
      * @throws \InvalidArgumentException
      */
