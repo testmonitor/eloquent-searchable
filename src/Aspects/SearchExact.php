@@ -5,7 +5,6 @@ namespace TestMonitor\Searchable\Aspects;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use RuntimeException;
@@ -22,6 +21,9 @@ class SearchExact implements Search
 {
     use ExtractsQuotedPhrases;
 
+    /**
+     * @var list<string>
+     */
     protected array $relationConstraints = [];
 
     /**
@@ -42,6 +44,9 @@ class SearchExact implements Search
         $weights->registerIf(empty($this->relationConstraints), $query, $weight);
     }
 
+    /**
+     * @param Builder<Model> $query
+     */
     protected function isRelationProperty(Builder $query, string $property): bool
     {
         if (! Str::contains($property, '.')) {
@@ -58,6 +63,8 @@ class SearchExact implements Search
     }
 
     /**
+     * @param Builder<Model> $query
+     *
      * @throws RuntimeException
      */
     protected function withRelationConstraint(
@@ -67,16 +74,13 @@ class SearchExact implements Search
         string $term,
         int $weight = 1
     ): void {
-        [$relation, $property] = collect(explode('.', $property))
-            ->pipe(fn (Collection $parts) => [
-                $parts->except(count($parts) - 1)->implode('.'),
-                $parts->last(),
-            ]);
+        $relation = Str::beforeLast($property, '.');
+        $column = Str::afterLast($property, '.');
 
-        $query->whereHas($relation, function (Builder $query) use ($property, $term, $weight, $weights) {
-            $this->relationConstraints[] = $property = $query->qualifyColumn($property);
+        $query->whereHas($relation, function (Builder $query) use ($column, $term, $weight, $weights) {
+            $this->relationConstraints[] = $qualified = $query->qualifyColumn($column);
 
-            $this->__invoke($query, $weights, $property, $term, $weight);
+            $this->__invoke($query, $weights, $qualified, $term, $weight);
         });
     }
 }

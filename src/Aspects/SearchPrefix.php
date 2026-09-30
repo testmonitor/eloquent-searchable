@@ -5,7 +5,6 @@ namespace TestMonitor\Searchable\Aspects;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use RuntimeException;
@@ -22,6 +21,9 @@ class SearchPrefix implements Search
 {
     use ExtractsQuotedPhrases;
 
+    /**
+     * @var list<string>
+     */
     protected array $relationConstraints = [];
 
     public function __construct(protected string $prefix, protected bool $exact = false)
@@ -53,6 +55,8 @@ class SearchPrefix implements Search
 
     /**
      * Search for an exact match.
+     *
+     * @param Builder<Model> $query
      */
     protected function searchForExactMatch(Builder $query, string $property, string $term): void
     {
@@ -67,6 +71,8 @@ class SearchPrefix implements Search
 
     /**
      * Search for a partial match.
+     *
+     * @param Builder<Model> $query
      */
     protected function searchForPartialMatch(Builder $query, string $property, string $term): void
     {
@@ -80,9 +86,12 @@ class SearchPrefix implements Search
      */
     protected function stripPrefix(string $term): string
     {
-        return preg_replace('/^' . preg_quote($this->prefix, '/') . '/i', '', $term);
+        return preg_replace('/^' . preg_quote($this->prefix, '/') . '/i', '', $term) ?? $term;
     }
 
+    /**
+     * @param Builder<Model> $query
+     */
     protected function isRelationProperty(Builder $query, string $property): bool
     {
         if (! Str::contains($property, '.')) {
@@ -99,6 +108,8 @@ class SearchPrefix implements Search
     }
 
     /**
+     * @param Builder<Model> $query
+     *
      * @throws RuntimeException
      */
     protected function withRelationConstraint(
@@ -108,16 +119,13 @@ class SearchPrefix implements Search
         string $term,
         int $weight = 1
     ): void {
-        [$relation, $property] = collect(explode('.', $property))
-            ->pipe(fn (Collection $parts) => [
-                $parts->except(count($parts) - 1)->implode('.'),
-                $parts->last(),
-            ]);
+        $relation = Str::beforeLast($property, '.');
+        $column = Str::afterLast($property, '.');
 
-        $query->whereHas($relation, function (Builder $query) use ($property, $term, $weight, $weights) {
-            $this->relationConstraints[] = $property = $query->qualifyColumn($property);
+        $query->whereHas($relation, function (Builder $query) use ($column, $term, $weight, $weights) {
+            $this->relationConstraints[] = $qualified = $query->qualifyColumn($column);
 
-            $this->__invoke($query, $weights, $property, $term, $weight);
+            $this->__invoke($query, $weights, $qualified, $term, $weight);
         });
     }
 }

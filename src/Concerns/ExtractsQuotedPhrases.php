@@ -6,6 +6,8 @@ trait ExtractsQuotedPhrases
 {
     /**
      * Parses a search term string into individual terms, preserving quoted phrases.
+     *
+     * @return list<string>
      */
     public function extractQuotedPhrases(string $term): array
     {
