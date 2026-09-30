@@ -31,7 +31,7 @@ class SearchJson implements Search
      */
     public function __invoke(Builder $query, Weights $weights, string $property, string $term, int $weight = 1): void
     {
-        $term = Str::of($term)->pipe('addslashes')->lower()->toString();
+        $term = Str::of($term)->lower()->toString();
 
         if ($this->isRelationProperty($query, $property)) {
             $this->withRelationConstraint($query, $weights, $property, $term, $weight);
