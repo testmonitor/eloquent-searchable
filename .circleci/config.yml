@@ -52,6 +52,7 @@ jobs:
           command: |
             mkdir -p ./logs/phpstan
             vendor/bin/phpstan analyse --memory-limit=1G --no-progress --error-format=junit > logs/phpstan/junit.xml
+
       - store_artifacts:
           path: ./logs/phpstan
           destination: phpstan
