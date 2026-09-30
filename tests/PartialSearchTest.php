@@ -11,18 +11,13 @@ use TestMonitor\Searchable\Requests\SearchRequest;
 use TestMonitor\Searchable\Test\Models\Ticket;
 use TestMonitor\Searchable\Test\Models\User;
 
-class PartialSearchTest extends TestCase
+final class PartialSearchTest extends TestCase
 {
-    /**
-     * @var Collection
-     */
-    protected $users;
-
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->users = User::factory()
+        $users = User::factory()
             ->count(4)
             ->state(new Sequence(
                 ['name' => 'Thijs Kok', 'email' => 'thijs@email.com'],
@@ -32,7 +27,7 @@ class PartialSearchTest extends TestCase
             ))
             ->create();
 
-        $this->users->each(function (User $user) {
+        $users->each(function (User $user) {
             Ticket::factory()
                 ->count(3)
                 ->state(new Sequence(
@@ -61,8 +56,8 @@ class PartialSearchTest extends TestCase
         // Then
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertCount(2, $results);
-        $this->assertEquals($results->first()->name, 'Thijs Kok');
-        $this->assertEquals($results->last()->name, 'Jan Thijssen');
+        $this->assertEquals('Thijs Kok', $results->first()->name);
+        $this->assertEquals('Jan Thijssen', $results->last()->name);
     }
 
     #[Test]
@@ -81,7 +76,7 @@ class PartialSearchTest extends TestCase
         // Then
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertCount(1, $results);
-        $this->assertEquals($results->first()->name, 'Thijs Kok');
+        $this->assertEquals('Thijs Kok', $results->first()->name);
     }
 
     #[Test]
@@ -100,7 +95,7 @@ class PartialSearchTest extends TestCase
         // Then
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertCount(1, $results);
-        $this->assertEquals($results->first()->name, 'Stephan Grootveld');
+        $this->assertEquals('Stephan Grootveld', $results->first()->name);
     }
 
     #[Test]
@@ -119,7 +114,7 @@ class PartialSearchTest extends TestCase
         // Then
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertCount(1, $results);
-        $this->assertEquals($results->first()->name, 'Frank Keulen');
+        $this->assertEquals('Frank Keulen', $results->first()->name);
     }
 
     #[Test]
