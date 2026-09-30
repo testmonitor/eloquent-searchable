@@ -10,8 +10,3 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: src/Aspects/SearchExact.php
-		-
-			message: '#^$keys of method Illuminate\\Support\\Collection<int,string>::except() expects array<int>|Illuminate\\Support\\Enumerable<(int|string), int>|string, int<-1, max> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Aspects/SearchJson.php

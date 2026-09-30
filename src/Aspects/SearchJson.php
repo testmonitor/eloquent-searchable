@@ -31,17 +31,17 @@ class SearchJson implements Search
      */
     public function __invoke(Builder $query, Weights $weights, string $property, string $term, int $weight = 1): void
     {
-        [$relation, $property] = collect(explode('.', $property))
-            ->pipe(fn (Collection $parts) => [
-                $parts->except(count($parts) - 1)->implode('.'),
-                $parts->last(),
-            ]);
+        $term = Str::of($term)->pipe('addslashes')->lower();
 
-        $query->whereHas($relation, function (Builder $query) use ($property, $term, $weight, $weights) {
-            $this->relationConstraints[] = $property = $query->qualifyColumn($property);
+        if ($this->isRelationProperty($query, $property)) {
+            $this->withRelationConstraint($query, $weights, $property, $term, $weight);
 
-            $this->__invoke($query, $weights, $property, $term, $weight);
-        });
+            return;
+        }
+
+        $query->whereRaw("JSON_SEARCH({$property}, 'one', '%{$term}%')");
+
+        $weights->registerIf(empty($this->relationConstraints), $query, $weight);
     }
 
     /**
