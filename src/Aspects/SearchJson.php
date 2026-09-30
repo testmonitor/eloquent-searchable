@@ -5,6 +5,7 @@ namespace TestMonitor\Searchable\Aspects;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use RuntimeException;
@@ -38,7 +39,14 @@ class SearchJson implements Search
             return;
         }
 
-        $query->whereRaw("JSON_SEARCH({$property}, 'one', '%{$term}%')");
+        $column = $query->getQuery()->getGrammar()->wrap($property);
+
+        // The column is wrapped by the grammar and the search term is bound.
+        $query->whereRaw(
+            // @phpstan-ignore argument.type
+            DB::raw("JSON_SEARCH({$column}, 'one', ?) IS NOT NULL"),
+            ["%{$term}%"]
+        );
 
         $weights->registerIf(empty($this->relationConstraints), $query, $weight);
     }

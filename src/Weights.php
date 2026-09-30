@@ -74,6 +74,8 @@ class Weights
 
         $cases = implode(' ', $conditions);
 
+        // Conditions are SQL compiled by the query grammar, with bindings escaped by the connection.
+        // @phpstan-ignore argument.type
         return $query->orderByDesc(DB::raw("CASE {$cases} ELSE 0 END"));
     }
 }
