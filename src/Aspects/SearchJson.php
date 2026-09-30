@@ -5,7 +5,7 @@ namespace TestMonitor\Searchable\Aspects;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use RuntimeException;
@@ -31,17 +31,17 @@ class SearchJson implements Search
      */
     public function __invoke(Builder $query, Weights $weights, string $property, string $term, int $weight = 1): void
     {
-        $term = Str::of($term)->pipe('addslashes')->lower();
+        [$relation, $property] = collect(explode('.', $property))
+            ->pipe(fn (Collection $parts) => [
+                $parts->except(count($parts) - 1)->implode('.'),
+                $parts->last(),
+            ]);
 
-        if ($this->isRelationProperty($query, $property)) {
-            $this->withRelationConstraint($query, $weights, $property, $term, $weight);
+        $query->whereHas($relation, function (Builder $query) use ($property, $term, $weight, $weights) {
+            $this->relationConstraints[] = $property = $query->qualifyColumn($property);
 
-            return;
-        }
-
-        $query->whereRaw("JSON_SEARCH({$property}, 'one', '%{$term}%')");
-
-        $weights->registerIf(empty($this->relationConstraints), $query, $weight);
+            $this->__invoke($query, $weights, $property, $term, $weight);
+        });
     }
 
     /**
