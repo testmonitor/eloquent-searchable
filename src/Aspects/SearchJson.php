@@ -31,7 +31,7 @@ class SearchJson implements Search
      */
     public function __invoke(Builder $query, Weights $weights, string $property, string $term, int $weight = 1): void
     {
-        $term = Str::of($term)->lower()->toString();
+        $term = Str::of($term)->pipe('addslashes')->lower();
 
         if ($this->isRelationProperty($query, $property)) {
             $this->withRelationConstraint($query, $weights, $property, $term, $weight);
@@ -39,14 +39,7 @@ class SearchJson implements Search
             return;
         }
 
-        $column = $query->getQuery()->getGrammar()->wrap($property);
-
-        // The column is wrapped by the grammar and the search term is bound.
-        $query->whereRaw(
-            // @phpstan-ignore argument.type
-            DB::raw("JSON_SEARCH({$column}, 'one', ?) IS NOT NULL"),
-            ["%{$term}%"]
-        );
+        $query->whereRaw("JSON_SEARCH({$property}, 'one', '%{$term}%')");
 
         $weights->registerIf(empty($this->relationConstraints), $query, $weight);
     }
