@@ -5,6 +5,7 @@ namespace TestMonitor\Searchable\Aspects;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use RuntimeException;
@@ -76,13 +77,16 @@ class SearchPartial implements Search
         string $term,
         int $weight = 1
     ): void {
-        $relation = Str::beforeLast($property, '.');
-        $column = Str::afterLast($property, '.');
+        [$relation, $property] = collect(explode('.', $property))
+            ->pipe(fn (Collection $parts) => [
+                $parts->except(count($parts) - 1)->implode('.'),
+                $parts->last(),
+            ]);
 
-        $query->whereHas($relation, function (Builder $query) use ($column, $term, $weight, $weights) {
-            $this->relationConstraints[] = $qualified = $query->qualifyColumn($column);
+        $query->whereHas($relation, function (Builder $query) use ($property, $term, $weight, $weights) {
+            $this->relationConstraints[] = $property = $query->qualifyColumn($property);
 
-            $this->__invoke($query, $weights, $qualified, $term, $weight);
+            $this->__invoke($query, $weights, $property, $term, $weight);
         });
     }
 }
