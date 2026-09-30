@@ -9,7 +9,7 @@ trait ExtractsQuotedPhrases
      */
     public function extractQuotedPhrases(string $term): array
     {
-        return str_getcsv(trim($term), ' ', escape: '\\');
+        return str_getcsv(string: trim($term), separator: ',', enclosure: ' ', escape: '\\');
     }
 
     /**
