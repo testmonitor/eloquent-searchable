@@ -6,6 +6,7 @@ parameters:
     level: 6
 
     paths:
+        - config
         - src
 
     tmpDir: build/phpstan
