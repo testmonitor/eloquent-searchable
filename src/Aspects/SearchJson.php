@@ -19,6 +19,9 @@ use TestMonitor\Searchable\Weights;
  */
 class SearchJson implements Search
 {
+    /**
+     * @var list<string>
+     */
     protected array $relationConstraints = [];
 
     /**
@@ -41,6 +44,9 @@ class SearchJson implements Search
         $weights->registerIf(empty($this->relationConstraints), $query, $weight);
     }
 
+    /**
+     * @param Builder<Model> $query
+     */
     protected function isRelationProperty(Builder $query, string $property): bool
     {
         if (! Str::contains($property, '.')) {
@@ -57,6 +63,8 @@ class SearchJson implements Search
     }
 
     /**
+     * @param Builder<Model> $query
+     *
      * @throws RuntimeException
      */
     protected function withRelationConstraint(

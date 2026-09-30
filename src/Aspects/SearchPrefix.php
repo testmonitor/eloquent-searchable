@@ -22,6 +22,9 @@ class SearchPrefix implements Search
 {
     use ExtractsQuotedPhrases;
 
+    /**
+     * @var list<string>
+     */
     protected array $relationConstraints = [];
 
     public function __construct(protected string $prefix, protected bool $exact = false)
@@ -53,6 +56,8 @@ class SearchPrefix implements Search
 
     /**
      * Search for an exact match.
+     *
+     * @param Builder<Model> $query
      */
     protected function searchForExactMatch(Builder $query, string $property, string $term): void
     {
@@ -67,6 +72,8 @@ class SearchPrefix implements Search
 
     /**
      * Search for a partial match.
+     *
+     * @param Builder<Model> $query
      */
     protected function searchForPartialMatch(Builder $query, string $property, string $term): void
     {
@@ -80,9 +87,12 @@ class SearchPrefix implements Search
      */
     protected function stripPrefix(string $term): string
     {
-        return preg_replace('/^' . preg_quote($this->prefix, '/') . '/i', '', $term);
+        return preg_replace('/^' . preg_quote($this->prefix, '/') . '/i', '', $term) ?? $term;
     }
 
+    /**
+     * @param Builder<Model> $query
+     */
     protected function isRelationProperty(Builder $query, string $property): bool
     {
         if (! Str::contains($property, '.')) {
@@ -99,6 +109,8 @@ class SearchPrefix implements Search
     }
 
     /**
+     * @param Builder<Model> $query
+     *
      * @throws RuntimeException
      */
     protected function withRelationConstraint(

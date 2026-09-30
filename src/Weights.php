@@ -3,6 +3,7 @@
 namespace TestMonitor\Searchable;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 class Weights
@@ -12,15 +13,25 @@ class Weights
      */
     protected array $weights = [];
 
+    /**
+     * @param Builder<Model> $query
+     */
     public function register(Builder $query, int $weight = 1): void
     {
         $sql = $this->compileWheresIntoSQL($query);
 
         $condition = strstr($sql, ' ');
 
+        if ($condition === false) {
+            return;
+        }
+
         $this->weights[$condition] = $weight;
     }
 
+    /**
+     * @param Builder<Model> $query
+     */
     public function registerIf(bool $condition, Builder $query, int $weight = 1): void
     {
         if ($condition) {
@@ -30,6 +41,8 @@ class Weights
 
     /**
      * Compile all where conditions to SQL.
+     *
+     * @param Builder<Model> $query
      */
     protected function compileWheresIntoSQL(Builder $query): string
     {
@@ -41,6 +54,12 @@ class Weights
         );
     }
 
+    /**
+     * @template TModel of Model
+     *
+     * @param Builder<TModel> $query
+     * @return Builder<TModel>
+     */
     public function applyOrderQuery(Builder $query): Builder
     {
         if (empty($this->weights)) {

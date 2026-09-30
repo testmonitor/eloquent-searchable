@@ -22,6 +22,9 @@ class SearchExact implements Search
 {
     use ExtractsQuotedPhrases;
 
+    /**
+     * @var list<string>
+     */
     protected array $relationConstraints = [];
 
     /**
@@ -42,6 +45,9 @@ class SearchExact implements Search
         $weights->registerIf(empty($this->relationConstraints), $query, $weight);
     }
 
+    /**
+     * @param Builder<Model> $query
+     */
     protected function isRelationProperty(Builder $query, string $property): bool
     {
         if (! Str::contains($property, '.')) {
@@ -58,6 +64,8 @@ class SearchExact implements Search
     }
 
     /**
+     * @param Builder<Model> $query
+     *
      * @throws RuntimeException
      */
     protected function withRelationConstraint(

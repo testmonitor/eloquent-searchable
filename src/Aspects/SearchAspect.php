@@ -3,11 +3,15 @@
 namespace TestMonitor\Searchable\Aspects;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use TestMonitor\Searchable\Contracts\Search;
 use TestMonitor\Searchable\Weights;
 
 class SearchAspect
 {
+    /**
+     * @param Search<Model> $searchClass
+     */
     public function __construct(
         protected string $name,
         protected Search $searchClass,
@@ -16,6 +20,9 @@ class SearchAspect
         //
     }
 
+    /**
+     * @param Builder<Model> $query
+     */
     public function search(Builder $query, Weights $weights, string $term): void
     {
         ($this->searchClass)($query, $weights, $this->name, $term, $this->weight);
@@ -41,6 +48,9 @@ class SearchAspect
         return new self($name, new SearchJson, $weight);
     }
 
+    /**
+     * @param Search<Model> $searchClass
+     */
     public static function custom(string $name, Search $searchClass): self
     {
         return new self($name, $searchClass);

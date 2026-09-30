@@ -10,7 +10,7 @@ class SearchableServiceProvider extends ServiceProvider
     /**
      * Perform post-registration booting of services.
      */
-    public function boot()
+    public function boot(): void
     {
         $this->publishes([
             __DIR__ . '/../config/searchable.php' => config_path('searchable.php'),
@@ -22,7 +22,7 @@ class SearchableServiceProvider extends ServiceProvider
     /**
      * Register the service provider.
      */
-    public function register()
+    public function register(): void
     {
         $this->app->bind(SearchRequest::class, fn ($app) => SearchRequest::fromRequest($app['request']));
     }

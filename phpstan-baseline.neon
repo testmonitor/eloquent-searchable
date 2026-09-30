@@ -1,0 +1,27 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Trait TestMonitor\\Searchable\\Searchable is used zero times and is not analysed\.$#'
+			identifier: trait.unused
+			count: 1
+			path: src/Searchable.php
+		-
+			message: '#^$keys of method Illuminate\\Support\\Collection<int,string>::except() expects array<int>|Illuminate\\Support\\Enumerable<(int|string), int>|string, int<-1, max> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Aspects/SearchExact.php
+		-
+			message: '#^$keys of method Illuminate\\Support\\Collection<int,string>::except() expects array<int>|Illuminate\\Support\\Enumerable<(int|string), int>|string, int<-1, max> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Aspects/SearchJson.php
+		-
+			message: '#^$keys of method Illuminate\\Support\\Collection<int,string>::except() expects array<int>|Illuminate\\Support\\Enumerable<(int|string), int>|string, int<-1, max> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Aspects/SearchPartial.php
+		-
+			message: '#^$keys of method Illuminate\\Support\\Collection<int,string>::except() expects array<int>|Illuminate\\Support\\Enumerable<(int|string), int>|string, int<-1, max> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Aspects/SearchPrefix.php
