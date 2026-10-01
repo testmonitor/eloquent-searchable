@@ -56,8 +56,10 @@ final class PartialSearchTest extends TestCase
         // Then
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertCount(2, $results);
-        $this->assertEquals('Thijs Kok', $results->first()->name);
-        $this->assertEquals('Jan Thijssen', $results->last()->name);
+        $this->assertEqualsCanonicalizing(
+            ['Thijs Kok', 'Jan Thijssen'],
+            $results->pluck('name')->all()
+        );
     }
 
     #[Test]

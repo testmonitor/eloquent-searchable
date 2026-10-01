@@ -80,7 +80,10 @@ final class SearchQueryTest extends TestCase
         // Then
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertCount(3, $results);
-        $this->assertEquals('Thijs Kok', $results->first()->name);
+        $this->assertEqualsCanonicalizing(
+            ['Thijs Kok', 'Frank Keulen', 'Stephan Grootveld'],
+            $results->pluck('name')->all()
+        );
     }
 
     #[Test]
@@ -96,7 +99,10 @@ final class SearchQueryTest extends TestCase
         // Then
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertCount(3, $results);
-        $this->assertEquals('Thijs Kok', $results->first()->name);
+        $this->assertEqualsCanonicalizing(
+            ['Thijs Kok', 'Frank Keulen', 'Stephan Grootveld'],
+            $results->pluck('name')->all()
+        );
     }
 
     #[Test]
