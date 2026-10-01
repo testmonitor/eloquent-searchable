@@ -51,7 +51,8 @@ abstract class TestCase extends OrchestraTestCase
     {
         $builder = $this->app['db']->connection()->getSchemaBuilder();
 
-        $builder->dropAllTables();
+        $builder->dropIfExists('tickets');
+        $builder->dropIfExists('users');
 
         $builder->create('users', function (Blueprint $table) {
             $table->increments('id');
