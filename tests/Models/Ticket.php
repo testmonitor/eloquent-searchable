@@ -18,6 +18,10 @@ class Ticket extends Model
 
     public $guarded = [];
 
+    protected $casts = [
+        'labels' => 'array',
+    ];
+
     protected static function booted()
     {
         static::creating(function (Ticket $ticket) {
