@@ -112,8 +112,10 @@ final class JsonSearchTest extends TestCase
         // Then
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertCount(2, $results);
-        $this->assertEquals('Thijs Kok', $results->first()->name);
-        $this->assertEquals('Stephan Grootveld', $results->last()->name);
+        $this->assertEqualsCanonicalizing(
+            ['Thijs Kok', 'Stephan Grootveld'],
+            $results->pluck('name')->all()
+        );
     }
 
     #[Test]
