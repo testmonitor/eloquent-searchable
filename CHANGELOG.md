@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Dropped support for PHP versions below 8.4
 - Dropped support for Laravel 11
 - Removed PHP-CS-Fixer (replaced by Pint)
+- JSON search now matches regardless of case
 
 ## [1.1.0] - 2025-04-09
 ### Added

@@ -29,7 +29,7 @@ final class JsonSearchTest extends TestCase
         $labels = [
             'Thijs Kok' => ['bug', 'urgent'],
             'Frank Keulen' => ['feature'],
-            'Stephan Grootveld' => ['bug', "won't fix"],
+            'Stephan Grootveld' => ['bug', "won't fix", 'Needs Review'],
         ];
 
         $users->each(function (User $user) use ($labels) {
@@ -83,6 +83,25 @@ final class JsonSearchTest extends TestCase
         // Given
         $this->app->bind(SearchRequest::class, fn () => SearchRequest::fromRequest(
             new Request(['query' => "won't"])
+        ));
+
+        // When
+        $results = Ticket::query()
+            ->searchUsing([SearchAspect::json('labels')])
+            ->get();
+
+        // Then
+        $this->assertInstanceOf(Collection::class, $results);
+        $this->assertCount(1, $results);
+        $this->assertEquals('Stephan Grootveld ticket', $results->first()->name);
+    }
+
+    #[Test]
+    public function it_will_find_records_using_a_json_match_regardless_of_case()
+    {
+        // Given
+        $this->app->bind(SearchRequest::class, fn () => SearchRequest::fromRequest(
+            new Request(['query' => 'NEEDS review'])
         ));
 
         // When

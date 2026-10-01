@@ -39,7 +39,7 @@ class SearchJson implements Search
             return;
         }
 
-        $query->whereRaw("JSON_SEARCH({$property}, 'one', '%{$term}%')");
+        $query->whereRaw("JSON_SEARCH(LOWER({$property}), 'one', '%{$term}%')");
 
         $weights->registerIf(empty($this->relationConstraints), $query, $weight);
     }
