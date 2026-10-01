@@ -48,6 +48,23 @@ final class SearchQueryTest extends TestCase
     }
 
     #[Test]
+    public function it_will_search_through_records_using_a_given_request()
+    {
+        // Given
+        $request = new Request(['query' => 'Frank']);
+
+        // When
+        $results = User::query()
+            ->searchUsing([SearchAspect::partial('name')], $request)
+            ->get();
+
+        // Then
+        $this->assertInstanceOf(Collection::class, $results);
+        $this->assertCount(1, $results);
+        $this->assertEquals('Frank Keulen', $results->first()->name);
+    }
+
+    #[Test]
     public function it_will_skip_searching_through_records_when_the_query_parameter_is_too_short()
     {
         // Given

@@ -73,6 +73,12 @@ jobs:
 
     docker:
       - image: cimg/php:8.4
+      - image: cimg/mysql:8.4
+        environment:
+          - MYSQL_ROOT_PASSWORD=root
+          - MYSQL_USER=user
+          - MYSQL_PASSWORD=passw0rd
+          - MYSQL_DATABASE=test
 
     steps:
       - attach_workspace:
