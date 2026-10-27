@@ -1,6 +1,6 @@
 <?php
 
-namespace TestMonitor\Searchable\Test;
+namespace TestMonitor\Searchable\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Schema\Blueprint;

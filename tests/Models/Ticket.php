@@ -1,6 +1,6 @@
 <?php
 
-namespace TestMonitor\Searchable\Test\Models;
+namespace TestMonitor\Searchable\Tests\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

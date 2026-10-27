@@ -1,6 +1,6 @@
 <?php
 
-namespace TestMonitor\Searchable\Test;
+namespace TestMonitor\Searchable\Tests;
 
 use PHPUnit\Framework\Attributes\Test;
 use TestMonitor\Searchable\Aspects\SearchAspect;

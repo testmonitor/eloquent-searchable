@@ -57,7 +57,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "TestMonitor\\Searchable\\Test\\": "tests"
+            "TestMonitor\\Searchable\\Tests\\": "tests"
         }
     },
     "scripts": {
