@@ -3,7 +3,7 @@
 namespace TestMonitor\Searchable\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use TestMonitor\Searchable\Test\Models\Ticket;
+use TestMonitor\Searchable\Tests\Models\Ticket;
 
 class TicketFactory extends Factory
 {

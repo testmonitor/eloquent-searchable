@@ -1,6 +1,6 @@
 <?php
 
-namespace TestMonitor\Searchable\Test;
+namespace TestMonitor\Searchable\Tests;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -10,7 +10,7 @@ use PHPUnit\Framework\Attributes\Test;
 use TestMonitor\Searchable\Aspects\SearchAspect;
 use TestMonitor\Searchable\Contracts\Search;
 use TestMonitor\Searchable\Requests\SearchRequest;
-use TestMonitor\Searchable\Test\Models\User;
+use TestMonitor\Searchable\Tests\Models\User;
 use TestMonitor\Searchable\Weights;
 
 final class CustomSearchTest extends TestCase

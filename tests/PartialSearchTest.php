@@ -1,6 +1,6 @@
 <?php
 
-namespace TestMonitor\Searchable\Test;
+namespace TestMonitor\Searchable\Tests;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Sequence;
@@ -8,8 +8,8 @@ use Illuminate\Http\Request;
 use PHPUnit\Framework\Attributes\Test;
 use TestMonitor\Searchable\Aspects\SearchAspect;
 use TestMonitor\Searchable\Requests\SearchRequest;
-use TestMonitor\Searchable\Test\Models\Ticket;
-use TestMonitor\Searchable\Test\Models\User;
+use TestMonitor\Searchable\Tests\Models\Ticket;
+use TestMonitor\Searchable\Tests\Models\User;
 
 final class PartialSearchTest extends TestCase
 {

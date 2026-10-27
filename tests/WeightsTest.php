@@ -1,10 +1,10 @@
 <?php
 
-namespace TestMonitor\Searchable\Test;
+namespace TestMonitor\Searchable\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use PHPUnit\Framework\Attributes\Test;
-use TestMonitor\Searchable\Test\Models\User;
+use TestMonitor\Searchable\Tests\Models\User;
 use TestMonitor\Searchable\Weights;
 
 final class WeightsTest extends TestCase
